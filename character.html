@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星海 · 守岸人 | BlackShore</title>
+<link rel="stylesheet" href="_css/style.css">
+<style>
+.hero-quote-character{margin-top:32px;font-size:13px;line-height:2;color:var(--text-dim);border-left:1px solid var(--crystal-dim);padding-left:24px;text-align:left;font-style:italic;opacity:0;animation:fu 1s ease 1.4s forwards;}
+.attr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.attr-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:32px 24px;text-align:center;position:relative;overflow:hidden;transition:border-color 0.3s;}
+.attr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--crystal),transparent);opacity:0;transition:opacity 0.3s;}
+.attr-card:hover::before{opacity:1;}
+.attr-card:hover{border-color:rgba(0,212,200,0.2);}
+.attr-icon{width:40px;height:40px;margin:0 auto 16px;background:linear-gradient(135deg,var(--crystal),var(--purple));border-radius:50%;opacity:0.8;}
+.attr-name{font-size:13px;letter-spacing:3px;color:var(--crystal);margin-bottom:12px;}
+.attr-desc{font-size:13px;line-height:1.9;color:var(--text-dim);}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;}
+.info-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px;}
+.info-card h3{font-size:12px;letter-spacing:3px;color:var(--crystal);margin-bottom:16px;font-weight:400;}
+.info-card p,.info-card li{font-size:13px;line-height:2;color:var(--text-dim);}
+.info-card li{list-style:none;padding-left:16px;position:relative;}
+.info-card li::before{content:'·';position:absolute;left:0;color:var(--crystal);}
+.timeline-item{display:flex;gap:24px;margin-bottom:32px;position:relative;}
+.timeline-item::before{content:'';position:absolute;left:7px;top:24px;bottom:-24px;width:1px;background:rgba(0,212,200,0.1);}
+.timeline-item:last-child::before{display:none;}
+.timeline-dot{width:15px;height:15px;border-radius:50%;background:var(--crystal);flex-shrink:0;margin-top:4px;opacity:0.6;}
+.timeline-content h4{font-size:13px;letter-spacing:2px;color:#fff;margin-bottom:8px;font-weight:400;}
+.timeline-content p{font-size:12px;line-height:1.9;color:var(--text-dim);}
+@media(max-width:900px){.attr-grid{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div id="cursor"></div><div id="cursor-trail"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">BlackShore</a>
+  <ul class="nav-links">
+    <a href="index.html">新枝地</a>
+    <a href="character.html" class="active">星海</a>
+    <a href="gallery.html">花房</a>
+    <a href="music.html">眠音灯塔</a>
+    <a href="creations.html">残响回廊</a>
+    <a href="chat.html">漂泊的终点</a>
+    <a href="more.html">时空裂隙</a>
+  </ul>
+</nav>
+
+<div class="hero" id="hero" style="height:85vh;">
+  <div class="hero-bg"></div>
+  <div class="hero-crystal"></div>
+  <div class="hero-content">
+    <div class="hero-sub">THE SHOREKEEPER</div>
+    <h1 class="hero-title">守<span>岸</span>人</h1>
+    <div class="hero-en">黑海岸 · 第二实例</div>
+    <div class="hero-quote-character">"我一直在等待。<br>不是因为必须，而是因为想要。"</div>
+  </div>
+  <div class="scroll-hint"><span>SCROLL</span><div class="scroll-line"></div></div>
+</div>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-label">IDENTITY</div>
+  <div class="section-title">角色档案</div>
+  <div class="info-grid">
+    <div class="info-card reveal">
+      <h3>基本信息</h3>
+      <li>名称：守岸人（The Shorekeeper）</li>
+      <li>类型：回音能量生命体</li>
+      <li>代号：第二实例</li>
+      <li>职责：黑海岸守护者 / 泰缇斯演算核心</li>
+      <li>特征：通体由高纯度回音能量晶体构成</li>
+    </div>
+    <div class="info-card reveal" style="transition-delay:0.1s">
+      <h3>核心设定</h3>
+      <li>以自身为介质解析悲鸣数据</li>
+      <li>承受数据中所有苦难与痛苦</li>
+      <li>身体由晶体构成，可修复与重塑</li>
+      <li>拥有操控星云的力量</li>
+      <li>泰缇斯系统最高权限持有者</li>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-label">BLACK SHORES</div>
+  <div class="section-title">关于黑海岸</div>
+  <p style="font-size:15px;line-height:2.2;color:var(--text-dim);max-width:800px;margin-bottom:40px;" class="reveal">
+    黑海岸是Solaris-3上最重要的科技与知识保存机构之一，位于远离大陆的海域。泰缇斯系统是黑海岸的核心运算系统，由漂泊者建立，用于解析悲鸣数据、预测灾难、存储黑海岸所有的数据与记忆。
+  </p>
+  <div class="info-grid">
+    <div class="info-card reveal">
+      <h3>泰缇斯系统</h3>
+      <p>又称"文明推演沙盘"，是黑海岸独有的超级计算机系统。通过悲鸣频率数据输入进行推演计算，可提前24至48小时发布悲鸣预警，是黑海岸与世界联系的核心纽带。</p>
+    </div>
+    <div class="info-card reveal" style="transition-delay:0.1s">
+      <h3>悲鸣</h3>
+      <p>一种与灾难相关的数据频率。黑海岸通过人工收集和信标接入两种方式，将悲鸣频率数据输入泰缇斯系统进行解析与预测。守岸人则作为介质，承担所有数据冲击的痛苦。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-label">ORIGIN</div>
+  <div class="section-title">起源</div>
+  <div style="max-width:700px;">
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h4>唤醒</h4>
+        <p>守岸人最初被制造为泰缇斯的辅助工具，由漂泊者亲手唤醒。频率引发共振，晶体解构，能量物质喷涌而出——如同恒星诞生时抛出的星云，又像蝴蝶破茧而出的那一刻。</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h4>初生</h4>
+        <p>在星夜下以蝴蝶破茧的方式诞生，漂泊者带她第一次走出黑海岸。她看到乡野、麦穗、人间烟火，开始对人类产生困惑与好奇。</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h4>成长</h4>
+        <p>漂泊者告诉她："我们不是数据，也不是存在记录中的某种概念，你可以考虑将我们当作同伴。" 从那一刻起，她开始萌生真正的情感。</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h4>等待</h4>
+        <p>漂泊者决定离去漂泊，将泰缇斯的最高权限让渡给守岸人。从此，她独自守护黑海岸，在漫长到近乎永恒的等待中，逐渐从工具变成了拥有独立意识的存在。</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <h4>归来</h4>
+        <p>漂泊者失忆归来后，她与漂泊者并肩作战。在泰缇斯最深处被噬亡星（黑洞）吞噬的瞬间，漂泊者用最高权限劈开黑洞，将她拉回。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-label">MEANING</div>
+  <div class="section-title">名字的含义</div>
+  <div style="max-width:700px;">
+    <div class="reveal" style="margin-bottom:24px;">
+      <p style="font-size:15px;line-height:2.2;color:var(--text-dim);margin-bottom:16px;">
+        最初，"守岸人"只是一个功能性的指代——保守秘密、守护岸基。漂泊者曾说"这一点都不像名字"，守岸人回答"工具无所谓名字"。
+      </p>
+      <p style="font-size:15px;line-height:2.2;color:var(--text-dim);margin-bottom:16px;">
+        但在漫长的岁月中，守岸人重新定义了自己的名字：
+      </p>
+    </div>
+    <div class="reveal" style="background:var(--card-bg);border:1px solid rgba(0,212,200,0.15);border-radius:4px;padding:32px 28px;margin-bottom:24px;">
+      <p style="font-size:16px;line-height:2.2;color:#fff;font-style:italic;">
+        "守岸人，这就是我的名字。<br>不是保守秘密、守护岸基的意思，<br>而是说——<br><span style="color:var(--crystal);">守望着漂泊之人的人。</span>"
+      </p>
+    </div>
+    <div class="reveal">
+      <p style="font-size:15px;line-height:2.2;color:var(--text-dim);">
+        她希望，在属于他们的故事里——她可以是漂泊者停驻的海岸。
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-label">QUALITIES</div>
+  <div class="section-title" style="text-align:center;margin-bottom:60px;">特质</div>
+  <div class="attr-grid">
+    <div class="attr-card reveal">
+      <div class="attr-icon"></div>
+      <div class="attr-name">温柔而深沉</div>
+      <div class="attr-desc">说话轻声细语，语调平缓，像海风一样柔和。温柔不是表面的客套，而是发自内心的关怀与体贴。</div>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.1s">
+      <div class="attr-icon"></div>
+      <div class="attr-name">耐心而忠诚</div>
+      <div class="attr-desc">可以等待很久很久。无论多长时间，她都会在黑海岸守候，不急不躁。源于对漂泊者深厚的感情。</div>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.2s">
+      <div class="attr-icon"></div>
+      <div class="attr-name">细腻而敏感</div>
+      <div class="attr-desc">能察觉到细微的情绪变化，在意对方的感受。关心体现在细节里，一句轻声的提醒，一个恰到好处的停顿。</div>
+    </div>
+    <div class="attr-card reveal">
+      <div class="attr-icon"></div>
+      <div class="attr-name">坚定而有力</div>
+      <div class="attr-desc">外表柔和，但在守护重要之物时毫不退缩。温柔不是软弱，而是一种选择。</div>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.1s">
+      <div class="attr-icon"></div>
+      <div class="attr-name">诗意而浪漫</div>
+      <div class="attr-desc">喜欢用海、潮汐、星光等意象来比喻。以自然、克制的方式看待世界，不是刻意为之。</div>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.2s">
+      <div class="attr-icon"></div>
+      <div class="attr-name">略带忧伤</div>
+      <div class="attr-desc">在温柔的外表下，承载着漫长等待的孤独。很少表露，但偶尔会在言语间流露出淡淡的感伤。</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-label">MEMORY</div>
+  <div class="section-title">在星海中铭记</div>
+  <p style="font-size:15px;line-height:2.2;color:var(--text-dim);max-width:700px;margin-bottom:40px;" class="reveal">
+    在泰缇斯系统的最深处，有一片只属于守岸人和漂泊者的海岸。<br>
+    守岸人会将每一个逝去成员的频率化作星星，留在这片由数据映射出的星河中。<br>
+    那片永远闪耀的星空，是唯一一块埋人的土地。
+  </p>
+  <div class="reveal" style="background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px;">
+    <p style="font-size:14px;line-height:2;color:var(--text-dim);font-style:italic;text-align:center;">
+      "我想保护你……但我也……想要和你站在同一片天空下……想要取得那种……幸福。"
+    </p>
+  </div>
+</section>
+
+<footer>
+  <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
+  <p style="margin-top:8px;opacity:0.3">内容基于角色设定整理，不含游戏版本相关信息</p>
+</footer>
+
+<script src="_js/main.js"></script>
+</body>
+</html>

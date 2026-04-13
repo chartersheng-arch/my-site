@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>残响回廊 · 二创链接 | BlackShore</title>
+<link rel="stylesheet" href="_css/style.css">
+<style>
+.cr-section{position:relative;z-index:1;padding:120px 48px;max-width:1000px;margin:0 auto;}
+.cr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+.cr-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px;transition:border-color 0.3s,transform 0.3s;}
+.cr-card:hover{border-color:rgba(0,212,200,0.2);transform:translateY(-4px);}
+.cr-tag{font-size:10px;letter-spacing:3px;color:var(--crystal);opacity:0.7;margin-bottom:12px;}
+.cr-title{font-size:16px;letter-spacing:3px;color:#fff;margin-bottom:12px;}
+.cr-desc{font-size:13px;line-height:1.9;color:var(--text-dim);margin-bottom:16px;}
+.cr-link{font-size:11px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color 0.3s;display:inline-flex;align-items:center;gap:6px;}
+.cr-link:hover{color:var(--crystal);}
+.cr-coming{grid-column:1/-1;text-align:center;padding:48px;color:var(--text-dim);font-size:13px;letter-spacing:3px;}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div id="cursor"></div><div id="cursor-trail"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">BlackShore</a>
+  <ul class="nav-links">
+    <a href="index.html">新枝地</a>
+    <a href="character.html">星海</a>
+    <a href="gallery.html">花房</a>
+    <a href="music.html">眠音灯塔</a>
+    <a href="creations.html" class="active">残响回廊</a>
+    <a href="chat.html">漂泊的终点</a>
+    <a href="more.html">时空裂隙</a>
+  </ul>
+</nav>
+
+<div class="hero" id="hero" style="height:60vh;">
+  <div class="hero-bg"></div>
+  <div class="hero-crystal"></div>
+  <div class="hero-content">
+    <div class="hero-sub">CREATIONS</div>
+    <h1 class="hero-title">残响回廊</h1>
+    <div class="hero-en">二创链接 · 社区精彩收录</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="cr-section">
+  <div class="section-label">FAN WORKS</div>
+  <div class="section-title">精彩二创收录</div>
+
+  <div class="cr-grid">
+    <div class="cr-card reveal">
+      <div class="cr-tag">ARTWORK</div>
+      <div class="cr-title">守岸人绘画作品</div>
+      <div class="cr-desc">社区艺术家们创作的守岸人精美插画与立绘</div>
+      <a href="#" class="cr-link">浏览作品 →</a>
+    </div>
+    <div class="cr-card reveal" style="transition-delay:0.1s">
+      <div class="cr-tag">WRITING</div>
+      <div class="cr-title">文字创作</div>
+      <div class="cr-desc">同人文、短篇、诗歌等文字作品收录</div>
+      <a href="#" class="cr-link">阅读作品 →</a>
+    </div>
+    <div class="cr-card reveal" style="transition-delay:0.2s">
+      <div class="cr-tag">VIDEO</div>
+      <div class="cr-title">视频创作</div>
+      <div class="cr-desc">混剪、手书、剧情向视频等视听作品</div>
+      <a href="#" class="cr-link">观看视频 →</a>
+    </div>
+    <div class="cr-card reveal">
+      <div class="cr-tag">COSPLAY</div>
+      <div class="cr-title">Cosplay</div>
+      <div class="cr-desc">守岸人 cosplay 摄影作品收录</div>
+      <a href="#" class="cr-link">查看作品 →</a>
+    </div>
+    <div class="cr-card reveal" style="transition-delay:0.1s">
+      <div class="cr-tag">MUSIC</div>
+      <div class="cr-title">音乐翻奏</div>
+      <div class="cr-desc">钢琴、吉他等乐器翻奏，以及翻唱作品</div>
+      <a href="#" class="cr-link">聆听作品 →</a>
+    </div>
+    <div class="cr-card reveal" style="transition-delay:0.2s">
+      <div class="cr-tag">TOOLS</div>
+      <div class="cr-title">工具与资源</div>
+      <div class="cr-desc">与守岸人/黑海岸主题相关的工具与小玩意</div>
+      <a href="#" class="cr-link">探索资源 →</a>
+    </div>
+    <div class="cr-coming reveal">更多二创内容整理中……</div>
+  </div>
+
+  <div style="margin-top:48px;padding:28px;background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;text-align:center;" class="reveal">
+    <p style="font-size:13px;color:var(--text-dim);line-height:2;letter-spacing:2px;">
+      如果你有优秀的守岸人二创想要被收录，欢迎联系。
+    </p>
+  </div>
+</div>
+
+<footer>
+  <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
+</footer>
+
+<script src="_js/main.js"></script>
+</body>
+</html>

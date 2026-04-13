@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>眠音灯塔 · 音乐电台 | BlackShore</title>
+<link rel="stylesheet" href="_css/style.css">
+<style>
+.music-section{position:relative;z-index:1;padding:120px 48px;max-width:900px;margin:0 auto;}
+.music-intro{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:32px;text-align:center;margin-bottom:48px;}
+.music-intro p{font-size:14px;line-height:2;color:var(--text-dim);}
+.music-note{font-size:12px;letter-spacing:3px;color:var(--crystal);opacity:0.7;margin-top:16px;}
+.soundwave{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:60px;margin:32px 0;}
+.soundwave span{display:width:4px;background:var(--crystal);border-radius:2px;opacity:0.6;animation:sw 1.2s ease-in-out infinite;}
+.soundwave span:nth-child(1){animation-delay:0s;height:20px;}
+.soundwave span:nth-child(2){animation-delay:0.1s;height:35px;}
+.soundwave span:nth-child(3){animation-delay:0.2s;height:50px;}
+.soundwave span:nth-child(4){animation-delay:0.3s;height:40px;}
+.soundwave span:nth-child(5){animation-delay:0.4s;height:55px;}
+.soundwave span:nth-child(6){animation-delay:0.5s;height:30px;}
+.soundwave span:nth-child(7){animation-delay:0.6s;height:45px;}
+.soundwave span:nth-child(8){animation-delay:0.7s;height:25px;}
+@keyframes sw{0%,100%{transform:scaleY(0.4);opacity:0.4}50%{transform:scaleY(1);opacity:0.8}}
+.music-links{display:flex;flex-direction:column;gap:16px;max-width:400px;margin:0 auto;}
+.music-link{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:border-color 0.3s,transform 0.3s;}
+.music-link:hover{border-color:rgba(0,212,200,0.3);transform:translateX(4px);}
+.music-link-title{font-size:13px;letter-spacing:3px;color:#fff;}
+.music-link-desc{font-size:11px;color:var(--text-dim);margin-top:4px;}
+.music-link-arrow{font-size:18px;color:var(--crystal);opacity:0.6;}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div id="cursor"></div><div id="cursor-trail"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">BlackShore</a>
+  <ul class="nav-links">
+    <a href="index.html">新枝地</a>
+    <a href="character.html">星海</a>
+    <a href="gallery.html">花房</a>
+    <a href="music.html" class="active">眠音灯塔</a>
+    <a href="creations.html">残响回廊</a>
+    <a href="chat.html">漂泊的终点</a>
+    <a href="more.html">时空裂隙</a>
+  </ul>
+</nav>
+
+<div class="hero" id="hero" style="height:60vh;">
+  <div class="hero-bg"></div>
+  <div class="hero-crystal"></div>
+  <div class="hero-content">
+    <div class="hero-sub">MUSIC STATION</div>
+    <h1 class="hero-title">眠音灯塔</h1>
+    <div class="hero-en">与旋律共度的时光</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="music-section">
+  <div class="music-intro reveal">
+    <div class="section-label">ABOUT</div>
+    <div class="section-title" style="margin-bottom:24px;">眠音灯塔</div>
+    <p>在黑海岸的某个角落，有一座永不熄灭的灯塔。<br>它不为船只指引方向，只为每一个疲惫的灵魂照亮旋律的归途。</p>
+    <div class="music-note">♪ 音乐播放页 · 整理中 ♪</div>
+    <div class="soundwave">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div class="section-label">PLAYLISTS</div>
+  <div class="section-title" style="font-size:24px;margin-bottom:32px;">音乐播放</div>
+
+  <div class="music-links">
+    <div class="music-link reveal">
+      <div>
+        <div class="music-link-title">守岸人角色曲</div>
+        <div class="music-link-desc">官方角色主题音乐</div>
+      </div>
+      <div class="music-link-arrow">→</div>
+    </div>
+    <div class="music-link reveal" style="transition-delay:0.1s">
+      <div>
+        <div class="music-link-title">黑海岸 OST</div>
+        <div class="music-link-desc">游戏原声配乐</div>
+      </div>
+      <div class="music-link-arrow">→</div>
+    </div>
+    <div class="music-link reveal" style="transition-delay:0.2s">
+      <div>
+        <div class="music-link-title">氛围音乐</div>
+        <div class="music-link-desc">适合安静聆听的曲目</div>
+      </div>
+      <div class="music-link-arrow">→</div>
+    </div>
+    <div class="music-link reveal" style="transition-delay:0.3s">
+      <div>
+        <div class="music-link-title">二创音乐</div>
+        <div class="music-link-desc">社区翻奏与创作</div>
+      </div>
+      <div class="music-link-arrow">→</div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:48px;" class="reveal">
+    <p style="font-size:13px;color:var(--text-dim);letter-spacing:2px;">更多音乐内容整理中……</p>
+    <p style="font-size:11px;color:var(--text-dim);opacity:0.5;margin-top:8px;">敬请期待</p>
+  </div>
+</div>
+
+<footer>
+  <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
+</footer>
+
+<script src="_js/main.js"></script>
+</body>
+</html>

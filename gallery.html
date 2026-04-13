@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>花房 · 图集 | BlackShore</title>
+<link rel="stylesheet" href="_css/style.css">
+<style>
+#gallery-page{position:relative;z-index:1;padding:100px 48px 80px;max-width:1400px;margin:0 auto;}
+.gallery-meta{font-size:11px;letter-spacing:3px;color:var(--text-dim);margin-bottom:40px;}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.gallery-item{position:relative;aspect-ratio:4/3;border-radius:4px;overflow:hidden;background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);cursor:none;opacity:0;transform:translateY(16px);transition:opacity 0.5s,transform 0.5s,border-color 0.3s;}
+.gallery-item.visible{opacity:1;transform:translateY(0);}
+.gallery-item:hover{border-color:rgba(0,212,200,0.35);}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease;}
+.gallery-item:hover img{transform:scale(1.04);}
+.gallery-item-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,8,16,0.8) 0%,transparent 50%);opacity:0;transition:opacity 0.3s;display:flex;align-items:flex-end;padding:16px;}
+.gallery-item:hover .gallery-item-overlay{opacity:1;}
+.gallery-item-overlay span{font-size:11px;letter-spacing:2px;color:var(--crystal);}
+@media(max-width:768px){#gallery-page{padding-left:24px;padding-right:24px}.gallery-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div id="cursor"></div><div id="cursor-trail"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">BlackShore</a>
+  <ul class="nav-links">
+    <a href="index.html">新枝地</a>
+    <a href="character.html">星海</a>
+    <a href="gallery.html" class="active">花房</a>
+    <a href="music.html">眠音灯塔</a>
+    <a href="creations.html">残响回廊</a>
+    <a href="chat.html">漂泊的终点</a>
+    <a href="more.html">时空裂隙</a>
+  </ul>
+</nav>
+
+<div style="position:relative;z-index:1;padding:120px 48px 0;max-width:1400px;margin:0 auto;">
+  <div class="section-label">GALLERY</div>
+  <div class="section-title">花房图集</div>
+  <div class="gallery-meta" id="galleryMeta">珍藏的每一帧画面</div>
+</div>
+
+<div id="gallery-page">
+  <div class="gallery-grid" id="galleryGrid"></div>
+</div>
+
+<footer>
+  <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
+</footer>
+
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(3,8,16,0.96);z-index:1000;align-items:center;justify-content:center;cursor:none;flex-direction:column;">
+  <div id="lbClose" style="position:fixed;top:28px;right:36px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,212,200,0.25);display:flex;align-items:center;justify-content:center;color:var(--crystal);font-size:18px;cursor:none;">✕</div>
+  <img id="lbImg" style="max-width:90vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 0 80px rgba(0,212,200,0.15);" />
+  <div style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;">
+    <button id="lbPrev" style="background:rgba(0,20,35,0.85);border:1px solid rgba(0,212,200,0.2);color:var(--crystal);padding:8px 20px;border-radius:20px;font-size:11px;letter-spacing:2px;cursor:none;transition:all 0.2s;">◀ PREV</button>
+    <span id="lbCounter" style="font-size:11px;letter-spacing:3px;color:var(--text-dim);"></span>
+    <button id="lbNext" style="background:rgba(0,20,35,0.85);border:1px solid rgba(0,212,200,0.2);color:var(--crystal);padding:8px 20px;border-radius:20px;font-size:11px;letter-spacing:2px;cursor:none;transition:all 0.2s;">NEXT ▶</button>
+  </div>
+</div>
+
+<script>
+const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
+let tx=0,ty=0;
+document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';tx+=(e.clientX-tx)*0.15;ty+=(e.clientY-ty)*0.15;trail.style.left=tx+'px';trail.style.top=ty+'px';});
+const canvas=document.getElementById('particles'),ctx=canvas&&canvas.getContext('2d');
+if(canvas&&ctx){
+  function rz(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  rz();window.addEventListener('resize',rz);
+  const ps=[];
+  for(let i=0;i<25;i++)ps.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+0.5,vx:(Math.random()-0.5)*0.3,vy:-Math.random()*0.5-0.1,alpha:Math.random()*0.4+0.1,color:'#00d4c8'});
+  (function df(){ctx.clearRect(0,0,canvas.width,canvas.height);ps.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.globalAlpha=p.alpha;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.y<-10){p.y=canvas.height+10;p.x=Math.random()*canvas.width;}});ctx.globalAlpha=1;requestAnimationFrame(df);})();
+}
+const picDir='file:///E:/AIopen/OpenClaw守岸人/resource/';
+const picNames=[
+  '%E5%90%9E%E5%A4%A9-2jdz6x8k.jpg','%E5%90%9E%E5%A4%A9-4vke8y78.jpg','%E5%90%9E%E5%A4%A9-7o3d4j2u.jpg',
+  '%E5%90%9E%E5%A4%A9-a90ekvnn.jpg','%E5%90%9E%E5%A4%A9-juambfa8.jpg','%E5%90%9E%E5%A4%A9-mtg1yjr1.jpg',
+  '%E5%90%9E%E5%A4%A9-nll9yi7t.jpg','%E5%90%9E%E5%A4%A9-o1o3a8f8.jpg','%E5%90%9E%E5%A4%A9-r0l4r1sr.jpg',
+  '%E5%90%9E%E5%A4%A9-snnz39xj.jpg','%E5%90%9E%E5%A4%A9-t5qvqvwi.jpg','%E5%90%9E%E5%A4%A9-voaurrg3.jpg',
+  '%E7%BB%AF%E7%81%AC%E6%A1%9C%E8%8A%B1-0iybwcpm.png','%E7%BB%AF%E7%81%AC%E6%A1%9C%E8%8A%B1-uhgqw4t9.jpg','%E7%BB%AF%E7%81%AC%E6%A1%9C%E8%8A%B1-zb6h9rd7.jpg',
+  '%EA%A7%81%E5%B0%8F%E6%A5%A0%E6%9E%AB%EA%A7%82-6htu3oo4.jpg','%EA%A7%81%E5%B0%8F%E6%A5%A0%E6%9E%AB%EA%A7%82-fqk0p13k.jpg','%EA%A7%81%E5%B0%8F%E6%A5%A0%E6%9E%AB%EA%A7%82-z26lz1y2.jpg',
+  '%F0%9F%98%98-l38t4x2b.webp',
+  'shou-%E2%99%A5-if43zg80.webp',
+  'shou-%E5%96%84%E7%AA%88%E7%AA%95-hucxmhb0.webp','shou-%E5%96%84%E7%AA%88%E7%AA%95-v2rtfzff.webp',
+  'shou-%E5%AE%88%E5%B2%B8%E4%BA%BA%E5%A4%A9%E4%B8%8B%E7%AC%AC%E4%B8%80-a3d2juj2.webp','shou-%E5%AE%88%E5%B2%B8%E4%BA%BA%E5%A4%A9%E4%B8%8B%E7%AC%AC%E4%B8%80-c7welobg.webp','shou-%E5%AE%88%E5%B2%B8%E4%BA%BA%E5%A4%A9%E4%B8%8B%E7%AC%AC%E4%B8%80-gc8fvcyn.webp',
+  'shou-%E5%AE%88%E6%8A%A4%E7%9D%80%E4%BD%A0-im5ub04g.webp',
+  'shou-%E5%B2%B8%E5%AE%9D%E5%84%BF-8r712xq9.webp','shou-%E5%B2%B8%E5%AE%9D-04jm3jc4.webp','shou-%E5%B2%B8%E5%AE%9D-2id0og4b.webp','shou-%E5%B2%B8%E5%AE%9D-7ct9phf7.webp','shou-%E5%B2%B8%E5%AE%9D-b9szhnnp.webp','shou-%E5%B2%B8%E5%AE%9D-bgxznj5q.webp','shou-%E5%B2%B8%E5%AE%9D-cft315y9.webp','shou-%E5%B2%B8%E5%AE%9D-dd8pz3rg.webp','shou-%E5%B2%B8%E5%AE%9D-e4morw6i.webp','shou-%E5%B2%B8%E5%AE%9D-f6f2hn0f.webp','shou-%E5%B2%B8%E5%AE%9D-i35rcd84.webp','shou-%E5%B2%B8%E5%AE%9D-mt9eoezz.webp','shou-%E5%B2%B8%E5%AE%9D-o1ax9lnd.webp','shou-%E5%B2%B8%E5%AE%9D-po4oaao9.webp','shou-%E5%B2%B8%E5%AE%9D-rikbw307.webp','shou-%E5%B2%B8%E5%AE%9D-x0xfr7sq.webp',
+  'shou-%E5%BF%83%E7%81%AB%E5%8C%96%E7%81%B5%E7%BE%BD-1ruu5sph.webp','shou-%E5%BF%83%E7%81%AB%E5%8C%96%E7%81%B5%E7%BE%BD-dmnnewee.webp','shou-%E5%BF%83%E7%81%AB%E5%8C%96%E7%81%B5%E7%BE%BD-gkia1k7z.webp','shou-%E5%BF%83%E7%81%AB%E5%8C%96%E7%81%B5%E7%BE%BD-lt3uhj7x.webp','shou-%E5%BF%83%E7%81%AB%E5%8C%96%E7%81%B5%E7%BE%BD-o03yvwif.webp','shou-%E5%BF%83%E7%81%AB%E5%8C%96%E7%81%B5%E7%BE%BD-ub8s4gzv.webp','shou-%E5%BF%83%E7%81%AB%E5%8C%96%E7%81%B5%E7%BE%BD-v4fvpin3.webp','shou-%E5%BF%83%E7%81%AB%E5%8C%96%E7%81%B5%E7%BE%BD-y8f0v8iy.webp',
+  'shou-%E6%85%95%E5%AE%B9%E7%AB%B9%E7%9C%A0-79ryfjy6.webp',
+  'shou-%E6%98%8E%E6%99%B0%E6%A2%A6-gib0m8p2.webp',
+  'shou-%E6%9C%88%E7%AC%94-9p7f44rc.webp',
+  'shou-%E6%B1%90%E5%B0%98-0pco0kza.webp','shou-%E6%B1%90%E5%B0%98-1zqdrlyo.webp','shou-%E6%B1%90%E5%B0%98-287sj81c.webp','shou-%E6%B1%90%E5%B0%98-5a57o3om.webp','shou-%E6%B1%90%E5%B0%98-a4rx9kw6.webp','shou-%E6%B1%90%E5%B0%98-cfhf821x.webp','shou-%E6%B1%90%E5%B0%98-dtj5cfem.webp','shou-%E6%B1%90%E5%B0%98-gp1n700h.webp','shou-%E6%B1%90%E5%B0%98-hzq7583q.webp','shou-%E6%B1%90%E5%B0%98-n049ngz0.webp','shou-%E6%B1%90%E5%B0%98-qiqh7v2d.webp','shou-%E6%B1%90%E5%B0%98-ryysmi55.webp','shou-%E6%B1%90%E5%B0%98-sdmhk3zg.webp','shou-%E6%B1%90%E5%B0%98-shx66p7y.webp','shou-%E6%B1%90%E5%B0%98-wdzh8vl5.webp','shou-%E6%B1%90%E5%B0%98-zsk8zd7o.webp',
+  'shou-%E8%8E%AB%E9%B1%BC-ys6qu3jr.webp',
+  'shou-%E9%B2%B8%E7%94%9F_%E9%B2%B8%E8%90%BD_-0yevr7ql.webp','shou-%E9%B2%B8%E7%94%9F_%E9%B2%B8%E8%90%BD_-4nnka6m8.webp','shou-%E9%B2%B8%E7%94%9F_%E9%B2%B8%E8%90%BD_-jps46h0m.webp','shou-%E9%B2%B8%E7%94%9F_%E9%B2%B8%E8%90%BD_-k2i553et.webp','shou-%E9%B2%B8%E7%94%9F_%E9%B2%B8%E8%90%BD_-zwnqc40j.webp',
+  'shou-coast-1p9zxm7k.webp','shou-coast-5a0ain09.webp','shou-coast-5xnpop9d.webp','shou-coast-96h522n8.webp','shou-coast-9doinskm.webp','shou-coast-aj5l8m3s.webp','shou-coast-bo9bbkrw.webp','shou-coast-chogn2o4.webp','shou-coast-er0lsnxh.webp','shou-coast-fnhoy2yc.webp','shou-coast-gwgx7mb2.webp','shou-coast-s2t6d4jo.webp','shou-coast-xc9ig1mr.webp',
+  'shou-dq-1e6vkuxg.webp','shou-dq-5p8sxk7f.webp','shou-dq-5qjoi90p.webp','shou-dq-lpwqz6w4.webp',
+  'slty1%20(1).webp','slty1%20(2).webp','slty1%20(4).webp','slty1%20(5).webp','slty1%20(6).webp','slty1%20(8).webp',
+  'slty2%20(1).webp','slty2%20(2).webp','slty2%20(3).webp','slty2%20(4).webp','slty2%20(5).webp','slty2%20(6).webp','slty2%20(7).webp','slty2%20(8).webp','slty2%20(9).webp','slty2%20(10).webp','slty2%20(11).webp',
+];
+document.getElementById('galleryMeta').textContent=`共 ${picNames.length} 张图片`;
+const grid=document.getElementById('galleryGrid');
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.05});
+picNames.forEach((name,i)=>{
+  const item=document.createElement('div');
+  item.className='gallery-item';
+  item.innerHTML=`<img src="${picDir}${encodeURIComponent(name)}" alt="gallery-${i}" onerror="this.parentElement.style.display='none'" /><div class="gallery-item-overlay"><span>守岸人 · ${i+1}</span></div>`;
+  item.addEventListener('click',()=>openL(i));
+  grid.appendChild(item);
+  setTimeout(()=>io.observe(item),i*30);
+});
+const lightbox=document.getElementById('lightbox');
+let ci=0;
+function show(i){ci=i;document.getElementById('lbImg').src=picDir+encodeURIComponent(picNames[i]);document.getElementById('lbCounter').textContent=`${i+1} / ${picNames.length}`;}
+function openL(i){show(i);lightbox.style.display='flex';document.body.style.overflow='hidden';}
+function closeL(){lightbox.style.display='none';document.body.style.overflow='';}
+document.getElementById('lbClose').addEventListener('click',closeL);
+lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeL();});
+document.getElementById('lbPrev').addEventListener('click',e=>{e.stopPropagation();show((ci-1+picNames.length)%picNames.length);});
+document.getElementById('lbNext').addEventListener('click',e=>{e.stopPropagation();show((ci+1)%picNames.length);});
+document.addEventListener('keydown',e=>{if(lightbox.style.display==='none')return;if(e.key==='Escape')closeL();if(e.key==='ArrowLeft')show((ci-1+picNames.length)%picNames.length);if(e.key==='ArrowRight')show((ci+1)%picNames.length);});
+</script>
+</body>
+</html>

@@ -4,173 +4,101 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BlackShore · 数字海岸</title>
-<style>
-:root{--bg:#030810;--crystal:#00d4c8;--crystal-dim:#007a73;--purple:#8b5cf6;--text:#cce4f0;--text-dim:#5a7a8a;--card-bg:rgba(0,20,35,0.7);}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;cursor:none;}
-#cursor{position:fixed;width:16px;height:16px;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(0,212,200,0.9) 0%,rgba(0,212,200,0.4) 40%,transparent 70%);box-shadow:0 0 8px rgba(0,212,200,0.8),0 0 20px rgba(0,212,200,0.5),0 0 40px rgba(0,212,200,0.2);}
-#cursor-trail{position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);background:rgba(0,212,200,0.6);box-shadow:0 0 6px rgba(0,212,200,0.5);}
-#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
-#navbar{position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;z-index:200;background:rgba(3,8,16,0.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,212,200,0.06);}
-.nav-logo{font-size:18px;font-weight:300;letter-spacing:6px;color:var(--crystal);text-shadow:0 0 20px rgba(0,212,200,0.4);text-decoration:none;}
-.nav-links{display:flex;gap:36px;list-style:none;}
-.nav-links a{color:var(--text-dim);text-decoration:none;font-size:12px;letter-spacing:3px;transition:color 0.3s;position:relative;padding-bottom:4px;}
-.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--crystal);transition:width 0.3s;}
-.nav-links a:hover{color:var(--crystal);}
-.nav-links a:hover::after{width:100%;}
-.nav-links a.active{color:var(--crystal);}
-.nav-links a.active::after{width:100%;}
-#hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;z-index:1;}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(0,212,200,0.07) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 30% 60%,rgba(139,92,246,0.04) 0%,transparent 60%),linear-gradient(180deg,#030810 0%,#020608 100%);}
-.hero-crystal{position:absolute;width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.07;background:radial-gradient(circle,var(--crystal) 0%,transparent 70%);filter:blur(60px);animation:cp 6s ease-in-out infinite;}
-@keyframes cp{0%,100%{opacity:0.07;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.14;transform:translate(-50%,-50%) scale(1.1)}}
-.hero-content{position:relative;text-align:center;z-index:2;}
-.hero-sub{font-size:11px;letter-spacing:12px;color:var(--crystal);opacity:0;animation:fu 1s ease 0.3s forwards;margin-bottom:20px;}
-.hero-title{font-size:clamp(48px,10vw,96px);font-weight:200;letter-spacing:20px;color:#fff;opacity:0;animation:fu 1.2s ease 0.6s forwards;text-shadow:0 0 60px rgba(0,212,200,0.3);}
-.hero-title span{color:var(--crystal);text-shadow:0 0 40px var(--crystal);}
-.hero-en{font-size:13px;letter-spacing:8px;color:var(--text-dim);margin-top:16px;opacity:0;animation:fu 1s ease 1s forwards;}
-.hero-quote{max-width:500px;margin:40px auto 0;font-size:14px;line-height:2;color:var(--text-dim);border-left:1px solid var(--crystal-dim);padding-left:24px;text-align:left;font-style:italic;opacity:0;animation:fu 1s ease 1.4s forwards;}
-.scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fu 1s ease 1.8s forwards;}
-.scroll-hint span{font-size:10px;letter-spacing:3px;color:var(--text-dim);}
-.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--crystal),transparent);animation:sd 2s ease infinite;}
-@keyframes sd{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
-@keyframes fu{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(0,212,200,0.15),transparent);}
-.section{position:relative;z-index:1;padding:120px 48px;max-width:1200px;margin:0 auto;}
-.section-label{font-size:10px;letter-spacing:6px;color:var(--crystal);margin-bottom:16px;opacity:0.6;}
-.section-title{font-size:clamp(28px,5vw,42px);font-weight:200;letter-spacing:6px;color:#fff;margin-bottom:56px;}
-.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
-.intro-text p{font-size:15px;line-height:2.2;color:var(--text-dim);margin-bottom:24px;}
-.stat-row{display:flex;gap:48px;margin-top:40px;padding-top:40px;border-top:1px solid rgba(0,212,200,0.1);}
-.stat{display:flex;flex-direction:column;gap:6px;}
-.stat-val{font-size:28px;font-weight:200;color:var(--crystal);letter-spacing:2px;}
-.stat-key{font-size:11px;letter-spacing:3px;color:var(--text-dim);}
-.intro-visual{position:relative;aspect-ratio:3/4;border-radius:4px;overflow:hidden;background:var(--card-bg);border:1px solid rgba(0,212,200,0.1);}
-.intro-visual::before{content:'';position:absolute;inset:-50%;background:conic-gradient(from 0deg,transparent 0deg,rgba(0,212,200,0.1) 60deg,transparent 120deg);animation:rb 8s linear infinite;}
-@keyframes rb{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.intro-visual-inner{position:absolute;inset:1px;background:var(--card-bg);border-radius:3px;display:flex;align-items:center;justify-content:center;}
-.placeholder-art{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;height:100%;}
-.crystal-icon{width:80px;height:100px;background:linear-gradient(135deg,var(--crystal) 0%,var(--purple) 100%);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);opacity:0.6;animation:cf 4s ease-in-out infinite;}
-@keyframes cf{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-10px) rotate(3deg)}}
-.placeholder-art span{font-size:12px;letter-spacing:4px;color:var(--text-dim);}
-#quotes{position:relative;z-index:1;padding:120px 48px;text-align:center;}
-.quote-glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(0,212,200,0.05) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
-.quote-text{font-size:clamp(20px,3vw,28px);font-weight:200;line-height:2;color:#fff;max-width:800px;margin:0 auto 32px;font-style:italic;}
-.quote-author{font-size:12px;letter-spacing:4px;color:var(--crystal);opacity:0.7;}
-#archive-section{background:linear-gradient(180deg,rgba(0,20,35,0.3) 0%,transparent 100%);padding:120px 48px;position:relative;z-index:1;}
-.attr-inner{max-width:1200px;margin:0 auto;}
-.attr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-.attr-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:32px 24px;text-align:center;position:relative;overflow:hidden;transition:border-color 0.3s;}
-.attr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--crystal),transparent);opacity:0;transition:opacity 0.3s;}
-.attr-card:hover::before{opacity:1;}
-.attr-card:hover{border-color:rgba(0,212,200,0.2);}
-.attr-icon{width:40px;height:40px;margin:0 auto 16px;background:linear-gradient(135deg,var(--crystal),var(--purple));border-radius:50%;opacity:0.8;}
-.attr-name{font-size:13px;letter-spacing:3px;color:var(--crystal);margin-bottom:12px;}
-.attr-desc{font-size:13px;line-height:1.8;color:var(--text-dim);}
-footer{text-align:center;padding:60px 48px;font-size:11px;letter-spacing:3px;color:var(--text-dim);border-top:1px solid rgba(0,212,200,0.05);position:relative;z-index:1;}
-footer span{color:var(--crystal);}
-.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease;}
-.reveal.visible{opacity:1;transform:translateY(0);}
-@media(max-width:900px){#navbar{padding:0 24px}.nav-links{gap:20px}.intro-grid{grid-template-columns:1fr;gap:40px}.attr-grid{grid-template-columns:1fr}section,#quotes,#archive-section{padding:80px 24px}}
-</style>
+<link rel="stylesheet" href="_css/style.css">
 </head>
 <body>
 <canvas id="particles"></canvas>
-<div id="cursor"></div>
-<div id="cursor-trail"></div>
+<div id="cursor"></div><div id="cursor-trail"></div>
+
 <nav id="navbar">
   <a href="index.html" class="nav-logo">BlackShore</a>
   <ul class="nav-links">
-    <a href="index.html" class="active">首页</a>
-    <a href="works.html">作品</a>
-    <a href="blog.html">博客</a>
-    <a href="about.html">关于</a>
+    <a href="index.html" class="active">新枝地</a>
+    <a href="character.html">星海</a>
+    <a href="gallery.html">花房</a>
+    <a href="music.html">眠音灯塔</a>
+    <a href="creations.html">残响回廊</a>
+    <a href="chat.html">漂泊的终点</a>
+    <a href="more.html">时空裂隙</a>
   </ul>
 </nav>
-<div id="hero">
+
+<div class="hero" id="hero" style="height:100vh;">
   <div class="hero-bg"></div>
   <div class="hero-crystal"></div>
   <div class="hero-content">
-    <div class="hero-sub">数字世界 · 创作者</div>
+    <div class="hero-sub">黑海岸 · 守望者的数字空间</div>
     <h1 class="hero-title">Black<span>Shore</span></h1>
     <div class="hero-en">BLACKSHORE</div>
-    <div class="hero-quote">"在数字的海岸边，<br>守望着每一次灵感的潮汐。<br>创作是一种等待，等待是另一种创作。"</div>
+    <div class="hero-quote">"我一直在等待。<br>不是因为必须，而是因为想要。<br>守望着漂泊之人的人——这就是我的名字。"</div>
   </div>
   <div class="scroll-hint"><span>SCROLL</span><div class="scroll-line"></div></div>
 </div>
+
 <div class="divider"></div>
-<section id="intro" class="section">
-  <div class="intro-grid">
-    <div class="intro-text reveal">
-      <div class="section-label">ABOUT</div>
-      <div class="section-title">关于这里</div>
-      <p>BlackShore 是我的个人创作空间。这里记录着我的作品、思考，以及一路走来的每一个脚印。</p>
-      <p>我喜欢探索技术与艺术的边界，在代码与设计之间寻找平衡。每一行代码，每一次创作，都是对世界的另一种表达。</p>
-      <p>如果你也热爱创作，欢迎来到这里。</p>
-      <div class="stat-row">
-        <div class="stat"><div class="stat-val">∞</div><div class="stat-key">探索之路</div></div>
-        <div class="stat"><div class="stat-val">100%</div><div class="stat-key">真诚创作</div></div>
-        <div class="stat"><div class="stat-val">1</div><div class="stat-key">海岸守望</div></div>
-      </div>
-    </div>
-    <div class="intro-visual reveal" style="transition-delay:0.2s">
-      <div class="intro-visual-inner">
-        <div class="placeholder-art">
-          <div class="crystal-icon"></div>
-          <span>BLACKSHORE</span>
-          <span style="font-size:10px;letter-spacing:2px;opacity:0.4">创作者的肖像</span>
-        </div>
-      </div>
-    </div>
-  </div>
+
+<section class="section">
+  <div class="section-label">WELCOME</div>
+  <div class="section-title">欢迎来到 BlackShore</div>
+  <p style="font-size:15px;line-height:2.2;color:var(--text-dim);max-width:700px;">
+    这是守望者的数字海岸，一个关于黑海岸、关于守岸人的创作空间。<br>
+    收录着她的故事、图集、音乐与一切美好的二创。<br>
+    无论你是否知道这里的存在，愿你都能找到属于自己的海岸。
+  </p>
 </section>
+
 <div class="divider"></div>
+
 <div id="quotes">
   <div class="quote-glow"></div>
-  <div class="quote-text reveal">"创作不是结果，<br>而是过程本身。<br>在海岸边等待潮汐，<br>每一朵浪花都是灵感。"</div>
-  <div class="quote-author reveal">—— BlackShore</div>
+  <div class="quote-text reveal">"守岸人，这就是我的名字。<br>不是保守秘密、守护岸基的意思，<br>而是说——<br>守望着漂泊之人的人。"</div>
+  <div class="quote-author reveal">—— 守岸人</div>
 </div>
+
 <div class="divider"></div>
-<div id="archive-section">
-  <div class="attr-inner">
-    <div class="section-label" style="text-align:center">CONTENTS</div>
-    <div class="section-title" style="text-align:center;margin-bottom:60px">内容概览</div>
-    <div class="attr-grid">
-      <div class="attr-card reveal">
-        <div class="attr-icon"></div>
-        <div class="attr-name">作品集</div>
-        <div class="attr-desc">收录各类创作作品，包括网页、设计、工具开发等，持续更新中</div>
-      </div>
-      <div class="attr-card reveal" style="transition-delay:0.1s">
-        <div class="attr-icon"></div>
-        <div class="attr-name">博客</div>
-        <div class="attr-desc">记录学习与思考的碎片，关于技术、设计，以及生活的随想</div>
-      </div>
-      <div class="attr-card reveal" style="transition-delay:0.2s">
-        <div class="attr-icon"></div>
-        <div class="attr-name">关于</div>
-        <div class="attr-desc">了解我更多，关于创作、兴趣、以及联系方式</div>
-      </div>
-    </div>
+
+<section class="section">
+  <div class="section-label" style="text-align:center">NAVIGATE</div>
+  <div class="section-title center" style="margin-bottom:60px">探索海岸</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+    <a href="character.html" style="background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px 24px;text-decoration:none;transition:border-color 0.3s,transform 0.3s;display:block;" class="reveal" onmouseover="this.style.borderColor='rgba(0,212,200,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(0,212,200,0.08)';this.style.transform='translateY(0)'">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--crystal);margin-bottom:12px;opacity:0.7;">星海</div>
+      <div style="font-size:15px;letter-spacing:3px;color:#fff;margin-bottom:8px;">人物介绍</div>
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">守岸人 · 角色档案</div>
+    </a>
+    <a href="gallery.html" style="background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px 24px;text-decoration:none;transition:border-color 0.3s,transform 0.3s;display:block;" class="reveal" onmouseover="this.style.borderColor='rgba(0,212,200,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(0,212,200,0.08)';this.style.transform='translateY(0)'">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--crystal);margin-bottom:12px;opacity:0.7;">花房</div>
+      <div style="font-size:15px;letter-spacing:3px;color:#fff;margin-bottom:8px;">图集画廊</div>
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">珍藏的每一帧画面</div>
+    </a>
+    <a href="music.html" style="background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px 24px;text-decoration:none;transition:border-color 0.3s,transform 0.3s;display:block;" class="reveal" onmouseover="this.style.borderColor='rgba(0,212,200,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(0,212,200,0.08)';this.style.transform='translateY(0)'">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--crystal);margin-bottom:12px;opacity:0.7;">眠音灯塔</div>
+      <div style="font-size:15px;letter-spacing:3px;color:#fff;margin-bottom:8px;">音乐电台</div>
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">与旋律共度的时光</div>
+    </a>
+    <a href="creations.html" style="background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px 24px;text-decoration:none;transition:border-color 0.3s,transform 0.3s;display:block;" class="reveal" onmouseover="this.style.borderColor='rgba(0,212,200,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(0,212,200,0.08)';this.style.transform='translateY(0)'">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--crystal);margin-bottom:12px;opacity:0.7;">残响回廊</div>
+      <div style="font-size:15px;letter-spacing:3px;color:#fff;margin-bottom:8px;">二创链接</div>
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">社区精彩创作收录</div>
+    </a>
+    <a href="chat.html" style="background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px 24px;text-decoration:none;transition:border-color 0.3s,transform 0.3s;display:block;" class="reveal" onmouseover="this.style.borderColor='rgba(0,212,200,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(0,212,200,0.08)';this.style.transform='translateY(0)'">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--crystal);margin-bottom:12px;opacity:0.7;">漂泊的终点</div>
+      <div style="font-size:15px;letter-spacing:3px;color:#fff;margin-bottom:8px;">AI 交流</div>
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">与守望者对话</div>
+    </a>
+    <a href="more.html" style="background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px 24px;text-decoration:none;transition:border-color 0.3s,transform 0.3s;display:block;" class="reveal" onmouseover="this.style.borderColor='rgba(0,212,200,0.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='rgba(0,212,200,0.08)';this.style.transform='translateY(0)'">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--crystal);margin-bottom:12px;opacity:0.7;">时空裂隙</div>
+      <div style="font-size:15px;letter-spacing:3px;color:#fff;margin-bottom:8px;">更多内容</div>
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">延伸阅读与链接</div>
+    </a>
   </div>
-</div>
+</section>
+
 <footer>
-  <p>BLACKSHORE · <span>数字海岸</span> · 创作者空间</p>
-  <p style="margin-top:8px;opacity:0.3">让每一次创作都成为潮汐</p>
+  <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
+  <p style="margin-top:8px;opacity:0.3">守望着漂泊之人的人</p>
 </footer>
-<script>
-const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
-let tx=0,ty=0;
-document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';tx+=(e.clientX-tx)*0.15;ty+=(e.clientY-ty)*0.15;trail.style.left=tx+'px';trail.style.top=ty+'px';});
-const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
-function rz(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
-rz();window.addEventListener('resize',rz);
-const ps=[];
-for(let i=0;i<40;i++)ps.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+0.5,vx:(Math.random()-0.5)*0.3,vy:-Math.random()*0.5-0.1,alpha:Math.random()*0.5+0.1,color:Math.random()>0.3?'#00d4c8':'#8b5cf6'});
-(function df(){ctx.clearRect(0,0,canvas.width,canvas.height);ps.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.globalAlpha=p.alpha;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.y<-10){p.y=canvas.height+10;p.x=Math.random()*canvas.width;}});ctx.globalAlpha=1;requestAnimationFrame(df);})();
-const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-</script>
+
+<script src="_js/main.js"></script>
 </body>
 </html>

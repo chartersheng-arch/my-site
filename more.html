@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>时空裂隙 · 更多 | BlackShore</title>
+<link rel="stylesheet" href="_css/style.css">
+<style>
+.more-section{position:relative;z-index:1;padding:120px 48px;max-width:1000px;margin:0 auto;}
+.more-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
+.more-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px;transition:border-color 0.3s,transform 0.3s;}
+.more-card:hover{border-color:rgba(0,212,200,0.2);transform:translateY(-4px);}
+.more-card-icon{font-size:24px;margin-bottom:16px;opacity:0.8;}
+.more-card-tag{font-size:10px;letter-spacing:3px;color:var(--crystal);opacity:0.7;margin-bottom:12px;}
+.more-card-title{font-size:16px;letter-spacing:3px;color:#fff;margin-bottom:12px;}
+.more-card-desc{font-size:13px;line-height:1.9;color:var(--text-dim);margin-bottom:16px;}
+.more-card-link{font-size:11px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color 0.3s;}
+.more-card-link:hover{color:var(--crystal);}
+.more-divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(0,212,200,0.1),transparent);margin:60px 0;}
+.links-section{text-align:center;}
+.links-title{font-size:13px;letter-spacing:4px;color:var(--text-dim);margin-bottom:32px;}
+.links-row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.link-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border:1px solid rgba(0,212,200,0.15);border-radius:20px;font-size:12px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:all 0.3s;}
+.link-btn:hover{color:var(--crystal);border-color:var(--crystal);}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div id="cursor"></div><div id="cursor-trail"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">BlackShore</a>
+  <ul class="nav-links">
+    <a href="index.html">新枝地</a>
+    <a href="character.html">星海</a>
+    <a href="gallery.html">花房</a>
+    <a href="music.html">眠音灯塔</a>
+    <a href="creations.html">残响回廊</a>
+    <a href="chat.html">漂泊的终点</a>
+    <a href="more.html" class="active">时空裂隙</a>
+  </ul>
+</nav>
+
+<div class="hero" id="hero" style="height:60vh;">
+  <div class="hero-bg"></div>
+  <div class="hero-crystal"></div>
+  <div class="hero-content">
+    <div class="hero-sub">MORE</div>
+    <h1 class="hero-title">时空裂隙</h1>
+    <div class="hero-en">延伸阅读 · 外部链接</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="more-section">
+  <div class="section-label">READING</div>
+  <div class="section-title">延伸阅读</div>
+
+  <div class="more-grid">
+    <div class="more-card reveal">
+      <div class="more-card-icon">📖</div>
+      <div class="more-card-tag">LORE</div>
+      <div class="more-card-title">黑海岸设定</div>
+      <div class="more-card-desc">关于黑海岸、泰缇斯系统与悲鸣预警系统的详细设定整理</div>
+      <a href="character.html" class="more-card-link">查看角色页 →</a>
+    </div>
+    <div class="more-card reveal" style="transition-delay:0.1s">
+      <div class="more-card-icon">🎮</div>
+      <div class="more-card-tag">GAME</div>
+      <div class="more-card-title">鸣潮·云海岸</div>
+      <div class="more-card-desc">广州库洛科技有限公司开发的开放世界动作游戏</div>
+      <a href="https://wuya.kurogames.com/" class="more-card-link" target="_blank">官方网站 →</a>
+    </div>
+    <div class="more-card reveal" style="transition-delay:0.2s">
+      <div class="more-card-icon">🌐</div>
+      <div class="more-card-tag">WIKI</div>
+      <div class="more-card-title">鸣潮 Wiki</div>
+      <div class="more-card-desc">游戏角色、任务、地图等全面资料收录</div>
+      <a href="https://wutheringwaves.fandom.com/zh/" class="more-card-link" target="_blank">Fandom Wiki →</a>
+    </div>
+    <div class="more-card reveal">
+      <div class="more-card-icon">🗺️</div>
+      <div class="more-card-tag">MAP</div>
+      <div class="more-card-title">黑海岸地图</div>
+      <div class="more-card-desc">黑海岸群岛·泰缇斯之底 新金枝地地图探索</div>
+      <a href="https://wutheringwaves.fandom.com/zh/wiki/%E9%BB%91%E6%B5%B7%E5%B2%B8" class="more-card-link" target="_blank">查看地图 →</a>
+    </div>
+    <div class="more-card reveal" style="transition-delay:0.1s">
+      <div class="more-card-icon">🎨</div>
+      <div class="more-card-tag">ART</div>
+      <div class="more-card-title">守岸人绘画整理</div>
+      <div class="more-card-desc">社区绘画作品的收录与整理</div>
+      <a href="gallery.html" class="more-card-link">浏览图集 →</a>
+    </div>
+    <div class="more-card reveal" style="transition-delay:0.2s">
+      <div class="more-card-icon">📝</div>
+      <div class="more-card-tag">TIMELINE</div>
+      <div class="more-card-title">时间线整理</div>
+      <div class="more-card-desc">守岸人及相关角色剧情时间线梳理</div>
+      <a href="#" class="more-card-link">整理中 →</a>
+    </div>
+  </div>
+
+  <div class="more-divider"></div>
+
+  <div class="links-section">
+    <div class="links-title">外部链接</div>
+    <div class="links-row">
+      <a href="https://github.com/chartersheng-arch" class="link-btn" target="_blank">GitHub</a>
+      <a href="https://wutheringwaves.fandom.com/zh/wiki/%E5%AE%88%E5%B2%B8%E4%BA%BA" class="link-btn" target="_blank">守岸人 Wiki</a>
+      <a href="https://mzh.moegirl.org.cn/%E5%AE%88%E5%B2%B8%E4%BA%BA" class="link-btn" target="_blank">萌娘百科</a>
+    </div>
+  </div>
+
+  <div class="more-divider"></div>
+
+  <div style="text-align:center;padding:32px;" class="reveal">
+    <p style="font-size:14px;color:var(--text-dim);line-height:2;letter-spacing:2px;">
+      "守望着漂泊之人的人——这就是我的名字。"<br>
+      <span style="color:var(--crystal);font-size:12px;opacity:0.7;">—— 守岸人</span>
+    </p>
+  </div>
+</div>
+
+<footer>
+  <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
+</footer>
+
+<script src="_js/main.js"></script>
+</body>
+</html>
