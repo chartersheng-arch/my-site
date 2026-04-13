@@ -1,8 +1,3 @@
-const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
-let tx=0,ty=0;
-if(cursor&&trail){
-  document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';tx+=(e.clientX-tx)*0.15;ty+=(e.clientY-ty)*0.15;trail.style.left=tx+'px';trail.style.top=ty+'px';});
-}
 const canvas=document.getElementById('particles'),ctx=canvas&&canvas.getContext('2d');
 if(canvas&&ctx){
   function rz(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}

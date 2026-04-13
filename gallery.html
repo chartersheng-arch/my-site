@@ -22,7 +22,6 @@
 </head>
 <body>
 <canvas id="particles"></canvas>
-<div id="cursor"></div><div id="cursor-trail"></div>
 <canvas id="butterflies" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:150;"></canvas>
 
 <nav id="navbar">
@@ -64,9 +63,6 @@
 </div>
 
 <script>
-const cursor=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
-let tx=0,ty=0;
-document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';tx+=(e.clientX-tx)*0.15;ty+=(e.clientY-ty)*0.15;trail.style.left=tx+'px';trail.style.top=ty+'px';});
 const canvas=document.getElementById('particles'),ctx=canvas&&canvas.getContext('2d');
 if(canvas&&ctx){
   function rz(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
