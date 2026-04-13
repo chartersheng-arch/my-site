@@ -42,4 +42,9 @@ footer{text-align:center;padding:60px 48px;font-size:11px;letter-spacing:3px;col
 footer span{color:var(--crystal);}
 .reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease,transform 0.8s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
-@media(max-width:900px){#navbar{padding:0 24px}.nav-links{gap:16px;font-size:11px}.section{padding:80px 24px}#quotes{padding:80px 24px}}
+#navbar{display:flex;align-items:center;gap:16px;}
+#nav-music{display:flex;align-items:center;gap:8px;margin-left:auto;padding-left:16px;border-left:1px solid rgba(0,212,200,0.08);}
+#musicToggle{background:none;border:1px solid rgba(0,212,200,0.3);color:var(--crystal);padding:5px 12px;border-radius:16px;font-size:10px;letter-spacing:2px;cursor:none;transition:all 0.2s;}
+#musicToggle:hover{border-color:var(--crystal);}
+#musicTitle{font-size:10px;letter-spacing:1px;color:var(--text-dim);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@media(max-width:900px){#navbar{padding:0 24px;flex-wrap:wrap}.nav-links{gap:16px;font-size:11px}.section{padding:80px 24px}#quotes{padding:80px 24px}#nav-music{border-left:none;padding-left:0;margin-left:0;border-top:1px solid rgba(0,212,200,0.06);width:100%;padding-top:12px;justify-content:center}}

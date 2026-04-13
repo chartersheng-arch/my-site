@@ -6,7 +6,24 @@
 <title>残响回廊 · 二创链接 | BlackShore</title>
 <link rel="stylesheet" href="_css/style.css">
 <style>
-.cr-section{position:relative;z-index:1;padding:120px 48px;max-width:1000px;margin:0 auto;}
+.cr-section{position:relative;z-index:1;padding:100px 48px 80px;max-width:1200px;margin:0 auto;}
+.cr-tabs{display:flex;gap:4px;margin-bottom:48px;flex-wrap:wrap;}
+.cr-tab{padding:8px 20px;font-size:11px;letter-spacing:3px;border:1px solid rgba(0,212,200,0.1);border-radius:20px;color:var(--text-dim);cursor:none;transition:all 0.3s;background:none;}
+.cr-tab.active,.cr-tab:hover{border-color:var(--crystal);color:var(--crystal);}
+.cr-tab-content{display:none;}
+.cr-tab-content.active{display:block;}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.video-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;overflow:hidden;transition:border-color 0.3s,transform 0.3s;cursor:none;}
+.video-card:hover{border-color:rgba(0,212,200,0.25);transform:translateY(-4px);}
+.video-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;}
+.video-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
+.video-card:hover .video-thumb img{transform:scale(1.05);}
+.video-thumb-overlay{position:absolute;inset:0;background:rgba(3,8,16,0.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;}
+.video-card:hover .video-thumb-overlay{opacity:1;}
+.video-play{width:48px;height:48px;border-radius:50%;background:rgba(0,212,200,0.85);display:flex;align-items:center;justify-content:center;font-size:16px;color:#030810;}
+.video-info{padding:16px 20px;}
+.video-title{font-size:13px;line-height:1.6;color:#fff;letter-spacing:1px;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.video-meta{font-size:10px;color:var(--text-dim);letter-spacing:2px;}
 .cr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
 .cr-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;padding:28px;transition:border-color 0.3s,transform 0.3s;}
 .cr-card:hover{border-color:rgba(0,212,200,0.2);transform:translateY(-4px);}
@@ -15,11 +32,19 @@
 .cr-desc{font-size:13px;line-height:1.9;color:var(--text-dim);margin-bottom:16px;}
 .cr-link{font-size:11px;letter-spacing:2px;color:var(--text-dim);text-decoration:none;transition:color 0.3s;display:inline-flex;align-items:center;gap:6px;}
 .cr-link:hover{color:var(--crystal);}
-.cr-coming{grid-column:1/-1;text-align:center;padding:48px;color:var(--text-dim);font-size:13px;letter-spacing:3px;}
+
+#videoModal{display:none;position:fixed;inset:0;background:rgba(3,8,16,0.95);z-index:1000;align-items:center;justify-content:center;flex-direction:column;}
+#videoModal.active{display:flex;}
+#videoModal iframe{max-width:900px;width:90vw;aspect-ratio:16/9;border:none;border-radius:4px;}
+#modalClose{position:absolute;top:20px;right:28px;font-size:24px;color:var(--crystal);cursor:none;opacity:0.8;transition:opacity 0.2s;}
+#modalClose:hover{opacity:1;}
+#modalTitle{color:var(--text-dim);font-size:12px;letter-spacing:3px;margin-top:16px;text-align:center;}
+@media(max-width:768px){.cr-section{padding-left:24px;padding-right:24px}}
 </style>
 </head>
 <body>
 <canvas id="particles"></canvas>
+<canvas id="butterflies" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:150;"></canvas>
 <div id="cursor"></div><div id="cursor-trail"></div>
 
 <nav id="navbar">
@@ -33,7 +58,13 @@
     <a href="chat.html">漂泊的终点</a>
     <a href="more.html">时空裂隙</a>
   </ul>
+  <div id="nav-music" style="margin-left:24px;display:flex;align-items:center;gap:8px;">
+    <button id="musicToggle" style="background:none;border:1px solid rgba(0,212,200,0.3);color:var(--crystal);padding:5px 12px;border-radius:16px;font-size:10px;letter-spacing:2px;cursor:none;transition:all 0.2s;" title="播放背景音乐">♪</button>
+    <span id="musicTitle" style="font-size:10px;letter-spacing:1px;color:var(--text-dim);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">繁星、新生，与你</span>
+  </div>
 </nav>
+
+<audio id="bgMusic" loop><source src="" type="audio/mpeg"></audio>
 
 <div class="hero" id="hero" style="height:60vh;">
   <div class="hero-bg"></div>
@@ -51,57 +82,246 @@
   <div class="section-label">FAN WORKS</div>
   <div class="section-title">精彩二创收录</div>
 
-  <div class="cr-grid">
-    <div class="cr-card reveal">
-      <div class="cr-tag">ARTWORK</div>
-      <div class="cr-title">守岸人绘画作品</div>
-      <div class="cr-desc">社区艺术家们创作的守岸人精美插画与立绘</div>
-      <a href="#" class="cr-link">浏览作品 →</a>
-    </div>
-    <div class="cr-card reveal" style="transition-delay:0.1s">
-      <div class="cr-tag">WRITING</div>
-      <div class="cr-title">文字创作</div>
-      <div class="cr-desc">同人文、短篇、诗歌等文字作品收录</div>
-      <a href="#" class="cr-link">阅读作品 →</a>
-    </div>
-    <div class="cr-card reveal" style="transition-delay:0.2s">
-      <div class="cr-tag">VIDEO</div>
-      <div class="cr-title">视频创作</div>
-      <div class="cr-desc">混剪、手书、剧情向视频等视听作品</div>
-      <a href="#" class="cr-link">观看视频 →</a>
-    </div>
-    <div class="cr-card reveal">
-      <div class="cr-tag">COSPLAY</div>
-      <div class="cr-title">Cosplay</div>
-      <div class="cr-desc">守岸人 cosplay 摄影作品收录</div>
-      <a href="#" class="cr-link">查看作品 →</a>
-    </div>
-    <div class="cr-card reveal" style="transition-delay:0.1s">
-      <div class="cr-tag">MUSIC</div>
-      <div class="cr-title">音乐翻奏</div>
-      <div class="cr-desc">钢琴、吉他等乐器翻奏，以及翻唱作品</div>
-      <a href="#" class="cr-link">聆听作品 →</a>
-    </div>
-    <div class="cr-card reveal" style="transition-delay:0.2s">
-      <div class="cr-tag">TOOLS</div>
-      <div class="cr-title">工具与资源</div>
-      <div class="cr-desc">与守岸人/黑海岸主题相关的工具与小玩意</div>
-      <a href="#" class="cr-link">探索资源 →</a>
-    </div>
-    <div class="cr-coming reveal">更多二创内容整理中……</div>
+  <div class="cr-tabs">
+    <button class="cr-tab active" data-tab="video">🎬 视频创作</button>
+    <button class="cr-tab" data-tab="artwork">🎨 绘画作品</button>
+    <button class="cr-tab" data-tab="writing">📝 文字创作</button>
+    <button class="cr-tab" data-tab="cosplay">📷 Cosplay</button>
+    <button class="cr-tab" data-tab="music">🎵 音乐翻奏</button>
   </div>
 
-  <div style="margin-top:48px;padding:28px;background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;text-align:center;" class="reveal">
-    <p style="font-size:13px;color:var(--text-dim);line-height:2;letter-spacing:2px;">
-      如果你有优秀的守岸人二创想要被收录，欢迎联系。
-    </p>
+  <div id="video" class="cr-tab-content active">
+    <div class="video-grid">
+      <div class="video-card" data-bv="BV1xroTY7Etk" data-title="「后来有人似你三分，我便慌了神！」完整版">
+        <div class="video-thumb">
+          <img src="https://i1.hdslb.com/bfs/archive/e9743f4f2bc1c8a5afcca5d9a4a07485a67dc023.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">「后来有人似你三分，我便慌了神！」完整版</div>
+          <div class="video-meta">BV1xroTY7Etk</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV1iU22YSEbx" data-title="先约电台深夜频道 | 守岸人">
+        <div class="video-thumb">
+          <img src="https://i1.hdslb.com/bfs/archive/a5307058a92f22dc14ff0455125ec6b7da24cd0a.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">先约电台深夜频道 | 守岸人</div>
+          <div class="video-meta">BV1iU22YSEbx</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV15aAPzZEEi" data-title="《鸣潮》MV｜爱是什么感觉">
+        <div class="video-thumb">
+          <img src="https://i0.hdslb.com/bfs/archive/5aabf743568a2eda4d348a8a95b756f1ac80b1c7.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">《鸣潮》MV｜爱是什么感觉</div>
+          <div class="video-meta">BV15aAPzZEEi</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV13g61ByEwW" data-title="共鸣者战斗摄影——守岸人">
+        <div class="video-thumb">
+          <img src="https://i1.hdslb.com/bfs/archive/0645eb7e4bf481e8a4933d80666faa28803929ea.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">共鸣者战斗摄影——守岸人</div>
+          <div class="video-meta">BV13g61ByEwW</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV1QKxkeFEJk" data-title="【守岸人×One last kiss】独属于我的蒙娜丽莎">
+        <div class="video-thumb">
+          <img src="https://i0.hdslb.com/bfs/archive/9cd7edb10967c8a2641879b499b77c771f5818a6.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">【守岸人×One last kiss】独属于我的蒙娜丽莎</div>
+          <div class="video-meta">BV1QKxkeFEJk</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV1s3XKB9E4m" data-title="致守岸人：我的机器人女友">
+        <div class="video-thumb">
+          <img src="https://i2.hdslb.com/bfs/archive/c5b7c60e4a3da5754161cb201f86c917c1216e91.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">致守岸人：我的机器人女友</div>
+          <div class="video-meta">BV1s3XKB9E4m</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV1hX2JYwESa" data-title="【守岸人手书】我肯定在几百年前就说过爱你">
+        <div class="video-thumb">
+          <img src="https://i0.hdslb.com/bfs/archive/c5da2c86c8d011a61dd11993d0e64b2058c451f8.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">【守岸人手书】我肯定在几百年前就说过爱你</div>
+          <div class="video-meta">BV1hX2JYwESa</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV12kxCeWEG1" data-title="【鸣潮守岸人】原创PV——时光彼岸">
+        <div class="video-thumb">
+          <img src="https://i1.hdslb.com/bfs/archive/18099dedf7652268f21d0aeedcf737a7ada7e253.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">【鸣潮守岸人】原创PV——时光彼岸</div>
+          <div class="video-meta">BV12kxCeWEG1</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV1yfxQeyEHP" data-title="守岸人近距离观赏2分钟">
+        <div class="video-thumb">
+          <img src="https://i2.hdslb.com/bfs/archive/26c60efb25a42f8d25eac1e0da547c66a20c6ea6.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">守岸人近距离观赏2分钟</div>
+          <div class="video-meta">BV1yfxQeyEHP</div>
+        </div>
+      </div>
+      <div class="video-card" data-bv="BV1ru2EYkES1" data-title="✨论这首曾火爆全网的《溯》与守岸人的满分适配度">
+        <div class="video-thumb">
+          <img src="https://i0.hdslb.com/bfs/archive/e0c60d924f14d6195e2f29cc2d82fae94ef319ff.jpg" alt="thumbnail" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22><rect fill=%22%23030810%22 width=%2216%22 height=%229%22/></svg>'">
+          <div class="video-thumb-overlay"><div class="video-play">▶</div></div>
+        </div>
+        <div class="video-info">
+          <div class="video-title">✨论《溯》与守岸人的满分适配度</div>
+          <div class="video-meta">BV1ru2EYkES1</div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div id="artwork" class="cr-tab-content">
+    <div class="cr-grid">
+      <div class="cr-card">
+        <div class="cr-tag">ARTWORK</div>
+        <div class="cr-title">守岸人绘画作品</div>
+        <div class="cr-desc">社区艺术家们创作的守岸人精美插画与立绘</div>
+        <a href="gallery.html" class="cr-link">浏览作品 →</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="writing" class="cr-tab-content">
+    <div class="cr-grid">
+      <div class="cr-card">
+        <div class="cr-tag">WRITING</div>
+        <div class="cr-title">文字创作</div>
+        <div class="cr-desc">同人文、短篇、诗歌等文字作品收录</div>
+        <a href="#" class="cr-link">阅读作品 →</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="cosplay" class="cr-tab-content">
+    <div class="cr-grid">
+      <div class="cr-card">
+        <div class="cr-tag">COSPLAY</div>
+        <div class="cr-title">Cosplay</div>
+        <div class="cr-desc">守岸人 cosplay 摄影作品收录</div>
+        <a href="#" class="cr-link">查看作品 →</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="music" class="cr-tab-content">
+    <div class="cr-grid">
+      <div class="cr-card">
+        <div class="cr-tag">MUSIC</div>
+        <div class="cr-title">音乐翻奏</div>
+        <div class="cr-desc">钢琴、吉他等乐器翻奏，以及翻唱作品</div>
+        <a href="music.html" class="cr-link">聆听作品 →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="videoModal">
+  <div id="modalClose">✕</div>
+  <iframe id="videoFrame" src="" allowfullscreen></iframe>
+  <div id="modalTitle"></div>
 </div>
 
 <footer>
   <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
 </footer>
 
-<script src="_js/main.js"></script>
+<script>
+(function(){
+  var canvas=document.getElementById('butterflies'),ctx=canvas.getContext('2d');
+  var width,height,mx=0,my=0,bs=[];
+  function rz(){width=canvas.width=window.innerWidth;height=canvas.height=window.innerHeight;}
+  rz();window.addEventListener('resize',rz);
+  window.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+  for(var i=0;i<12;i++){
+    bs.push({x:Math.random()*width,y:Math.random()*height,vx:(Math.random()-0.5)*0.8,vy:(Math.random()-0.5)*0.5,angle:Math.random()*Math.PI*2,aVel:(Math.random()-0.5)*0.04,wing:0,speed:0.08+Math.random()*0.06,size:8+Math.random()*8});
+  }
+  function drawB(b){
+    ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.angle);
+    var ws=Math.sin(b.wing)*b.size;
+    ctx.fillStyle='rgba(0,212,200,0.7)';
+    ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(ws*0.5,-b.size*0.6,ws,-b.size*0.3,ws,0);ctx.bezierCurveTo(ws,b.size*0.3,ws*0.5,b.size*0.6,0,0);ctx.fill();
+    ctx.fillStyle='rgba(0,212,200,0.5)';
+    ctx.beginPath();ctx.moveTo(0,0);ctx.bezierCurveTo(-ws*0.5,-b.size*0.6,-ws,-b.size*0.3,-ws,0);ctx.bezierCurveTo(-ws,b.size*0.3,-ws*0.5,b.size*0.6,0,0);ctx.fill();
+    ctx.fillStyle='rgba(0,212,200,0.9)';ctx.beginPath();ctx.arc(0,0,b.size*0.15,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  }
+  (function fl(){
+    ctx.clearRect(0,0,width,height);
+    bs.forEach(function(b){
+      var dx=mx-b.x,dy=my-b.y,dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<120){var f=(120-dist)/120*2;b.vx+=dx/dist*f*0.3;b.vy+=dy/dist*f*0.3;}
+      b.vx*=(1-0.02);b.vy*=(1-0.02);
+      b.x+=b.vx;b.y+=b.vy;b.angle+=b.aVel;b.wing+=b.speed;
+      if(b.wing>Math.PI*2)b.wing-=Math.PI*2;
+      if(b.x<-50)b.x=width+50;if(b.x>width+50)b.x=-50;
+      if(b.y<-50)b.y=height+50;if(b.y>height+50)b.y=-50;
+      drawB(b);
+    });
+    requestAnimationFrame(fl);
+  })();
+})();
+
+(function(){
+  var musicSrc='https://bilbb-a.akamaized.net/audio/music/BV1xroTY7Etk.mp3';
+  var audio=document.getElementById('bgMusic');
+  var btn=document.getElementById('musicToggle');
+  var playing=false;
+  audio.src=musicSrc;audio.volume=0.3;
+  btn.addEventListener('click',function(){
+    if(playing){audio.pause();btn.textContent='♪';btn.style.borderColor='rgba(0,212,200,0.3)';playing=false;}
+    else{audio.play().catch(function(){});btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;}
+  });
+})();
+
+document.querySelectorAll('.cr-tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.cr-tab').forEach(function(x){x.classList.remove('active');});
+    document.querySelectorAll('.cr-tab-content').forEach(function(x){x.classList.remove('active');});
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+var modal=document.getElementById('videoModal'),frame=document.getElementById('videoFrame'),mTitle=document.getElementById('modalTitle');
+document.querySelectorAll('.video-card').forEach(function(c){
+  c.addEventListener('click',function(){
+    var bv=c.dataset.bv,title=c.dataset.title;
+    frame.src='https://player.bilibili.com/player.html?bvid='+bv+'&autoplay=1';
+    mTitle.textContent=title;
+    modal.classList.add('active');
+    document.body.style.overflow='hidden';
+  });
+});
+document.getElementById('modalClose').addEventListener('click',function(){
+  modal.classList.remove('active');frame.src='';document.body.style.overflow='';
+});
+modal.addEventListener('click',function(e){if(e.target===modal){document.getElementById('modalClose').click();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('active'))document.getElementById('modalClose').click();});
+</script>
 </body>
 </html>
