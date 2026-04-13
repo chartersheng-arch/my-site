@@ -1,0 +1,172 @@
+/* ================================
+   Base Styles
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #fafafa;
+  --text: #333;
+  --accent: #4a9eff;
+  --muted: #888;
+  --border: #eee;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ================================
+   Layout
+================================ */
+header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+}
+
+nav {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+nav a.active,
+nav a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+main {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+  min-height: 60vh;
+}
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ================================
+   Components
+================================ */
+.hero {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.hero .highlight {
+  color: var(--accent);
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+.intro {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  margin-bottom: 0.5rem;
+}
+
+/* Works Grid */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.work-item {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: box-shadow 0.2s;
+}
+
+.work-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Blog List */
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.blog-item {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.blog-item time {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.blog-item p {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+/* About */
+.about-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.about-content p {
+  margin-bottom: 1rem;
+}
