@@ -136,7 +136,7 @@ const grid=document.getElementById('galleryGrid');
 const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.05});
 picNames.forEach((name,i)=>{
   const item=document.createElement('div');
-  item.className='gallery-item';
+  item.className='gallery-item visible';
   item.innerHTML=`<img src="${picDir}${encodeURIComponent(name)}" alt="gallery-${i}" onerror="this.parentElement.style.display='none'" /><div class="gallery-item-overlay"><span>守岸人 · ${i+1}</span></div>`;
   item.addEventListener('click',()=>openL(i));
   grid.appendChild(item);
