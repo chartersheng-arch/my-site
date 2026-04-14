@@ -68,7 +68,7 @@ if(canvas&&ctx){
   for(let i=0;i<25;i++)ps.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+0.5,vx:(Math.random()-0.5)*0.3,vy:-Math.random()*0.5-0.1,alpha:Math.random()*0.4+0.1,color:'#00d4c8'});
   (function df(){ctx.clearRect(0,0,canvas.width,canvas.height);ps.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.globalAlpha=p.alpha;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.y<-10){p.y=canvas.height+10;p.x=Math.random()*canvas.width;}});ctx.globalAlpha=1;requestAnimationFrame(df);})();
 }
-const picDir='https://cdn.jsdelivr.net/gh/chartersheng-arch/gallery-assets@main/';
+const picDir='https://raw.githubusercontent.com/chartersheng-arch/gallery-assets/main/';
 const picNames=[
   '001.jpg',
   '002.jpg',
