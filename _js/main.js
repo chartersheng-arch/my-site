@@ -8,3 +8,8 @@ if(canvas&&ctx){
 }
 const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const cursor=document.getElementById('cursor'),cursorDot=document.getElementById('cursor-dot');
+document.addEventListener('mousemove',e=>{if(cursor){cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';cursor.style.opacity='1';}if(cursorDot){cursorDot.style.left=e.clientX+'px';cursorDot.style.top=e.clientY+'px';cursorDot.style.opacity='1';}});
+document.addEventListener('mouseleave',()=>{if(cursor)cursor.style.opacity='0';if(cursorDot)cursorDot.style.opacity='0';});
+document.addEventListener('mouseenter',()=>{if(cursor)cursor.style.opacity='1';if(cursorDot)cursorDot.style.opacity='1';});
+document.addEventListener('mouseover',()=>{if(cursor)cursor.style.opacity='1';if(cursorDot)cursorDot.style.opacity='1';});

@@ -9,7 +9,7 @@
 #gallery-page{position:relative;z-index:1;padding:100px 48px 80px;max-width:1400px;margin:0 auto;}
 .gallery-meta{font-size:11px;letter-spacing:3px;color:var(--text-dim);margin-bottom:40px;}
 .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
-.gallery-item{position:relative;aspect-ratio:4/3;border-radius:4px;overflow:hidden;background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);cursor:none;opacity:0;transform:translateY(16px);transition:opacity 0.5s,transform 0.5s,border-color 0.3s;}
+.gallery-item{position:relative;aspect-ratio:4/3;border-radius:4px;overflow:hidden;background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);opacity:0;transform:translateY(16px);transition:opacity 0.5s,transform 0.5s,border-color 0.3s;}
 .gallery-item.visible{opacity:1;transform:translateY(0);}
 .gallery-item:hover{border-color:rgba(0,212,200,0.35);}
 .gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease;}
@@ -22,6 +22,7 @@
 </head>
 <body>
 <canvas id="particles"></canvas>
+<div id="cursor"></div><div id="cursor-dot"></div>
 
 <nav id="navbar"><a href="index.html" class="nav-logo">BlackShore</a><div id="nav-music"><button id="musicToggle" title="播放背景音乐">♪</button><span id="musicTitle">繁星、新生，与你</span></div><ul class="nav-links">
     <a href="index.html">新枝地</a>
@@ -47,16 +48,17 @@
   <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
 </footer>
 
-<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(3,8,16,0.96);z-index:1000;align-items:center;justify-content:center;cursor:none;flex-direction:column;">
-  <div id="lbClose" style="position:fixed;top:28px;right:36px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,212,200,0.25);display:flex;align-items:center;justify-content:center;color:var(--crystal);font-size:18px;cursor:none;">✕</div>
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(3,8,16,0.96);z-index:1000;align-items:center;justify-content:center;flex-direction:column;">
+  <div id="lbClose" style="position:fixed;top:28px;right:36px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,212,200,0.25);display:flex;align-items:center;justify-content:center;color:var(--crystal);font-size:18px;">✕</div>
   <img id="lbImg" style="max-width:90vw;max-height:88vh;object-fit:contain;border-radius:4px;box-shadow:0 0 80px rgba(0,212,200,0.15);" />
   <div style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;">
-    <button id="lbPrev" style="background:rgba(0,20,35,0.85);border:1px solid rgba(0,212,200,0.2);color:var(--crystal);padding:8px 20px;border-radius:20px;font-size:11px;letter-spacing:2px;cursor:none;transition:all 0.2s;">◀ PREV</button>
+    <button id="lbPrev" style="background:rgba(0,20,35,0.85);border:1px solid rgba(0,212,200,0.2);color:var(--crystal);padding:8px 20px;border-radius:20px;font-size:11px;letter-spacing:2px;transition:all 0.2s;">◀ PREV</button>
     <span id="lbCounter" style="font-size:11px;letter-spacing:3px;color:var(--text-dim);"></span>
-    <button id="lbNext" style="background:rgba(0,20,35,0.85);border:1px solid rgba(0,212,200,0.2);color:var(--crystal);padding:8px 20px;border-radius:20px;font-size:11px;letter-spacing:2px;cursor:none;transition:all 0.2s;">NEXT ▶</button>
+    <button id="lbNext" style="background:rgba(0,20,35,0.85);border:1px solid rgba(0,212,200,0.2);color:var(--crystal);padding:8px 20px;border-radius:20px;font-size:11px;letter-spacing:2px;transition:all 0.2s;">NEXT ▶</button>
   </div>
 </div>
 
+<script src="_js/main.js"></script>
 <script>
 const canvas=document.getElementById('particles'),ctx=canvas&&canvas.getContext('2d');
 if(canvas&&ctx){
@@ -150,6 +152,7 @@ lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeL();});
 document.getElementById('lbPrev').addEventListener('click',e=>{e.stopPropagation();show((ci-1+picNames.length)%picNames.length);});
 document.getElementById('lbNext').addEventListener('click',e=>{e.stopPropagation();show((ci+1)%picNames.length);});
 document.addEventListener('keydown',e=>{if(lightbox.style.display==='none')return;if(e.key==='Escape')closeL();if(e.key==='ArrowLeft')show((ci-1+picNames.length)%picNames.length);if(e.key==='ArrowRight')show((ci+1)%picNames.length);});
+(function(){var c=document.getElementById('cursor'),cd=document.getElementById('cursor-dot');document.addEventListener('mousemove',function(e){if(c){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';c.style.opacity='1';}if(cd){cd.style.left=e.clientX+'px';cd.style.top=e.clientY+'px';cd.style.opacity='1';}});document.addEventListener('mouseleave',function(){if(c)c.style.opacity='0';if(cd)cd.style.opacity='0';});document.addEventListener('mouseenter',function(){if(c)c.style.opacity='1';if(cd)cd.style.opacity='1';});})();
 </script>
 </body>
 </html>

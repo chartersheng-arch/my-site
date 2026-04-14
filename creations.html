@@ -8,12 +8,12 @@
 <style>
 .cr-section{position:relative;z-index:1;padding:100px 48px 80px;max-width:1200px;margin:0 auto;}
 .cr-tabs{display:flex;gap:4px;margin-bottom:48px;flex-wrap:wrap;}
-.cr-tab{padding:8px 20px;font-size:11px;letter-spacing:3px;border:1px solid rgba(0,212,200,0.1);border-radius:20px;color:var(--text-dim);cursor:none;transition:all 0.3s;background:none;}
+.cr-tab{padding:8px 20px;font-size:11px;letter-spacing:3px;border:1px solid rgba(0,212,200,0.1);border-radius:20px;color:var(--text-dim);transition:all 0.3s;background:none;}
 .cr-tab.active,.cr-tab:hover{border-color:var(--crystal);color:var(--crystal);}
 .cr-tab-content{display:none;}
 .cr-tab-content.active{display:block;}
 .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
-.video-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;overflow:hidden;transition:border-color 0.3s,transform 0.3s;cursor:none;}
+.video-card{background:var(--card-bg);border:1px solid rgba(0,212,200,0.08);border-radius:4px;overflow:hidden;transition:border-color 0.3s,transform 0.3s;}
 .video-card:hover{border-color:rgba(0,212,200,0.25);transform:translateY(-4px);}
 .video-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000;}
 .video-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
@@ -36,7 +36,7 @@
 #videoModal{display:none;position:fixed;inset:0;background:rgba(3,8,16,0.95);z-index:1000;align-items:center;justify-content:center;flex-direction:column;}
 #videoModal.active{display:flex;}
 #videoModal iframe{max-width:900px;width:90vw;aspect-ratio:16/9;border:none;border-radius:4px;}
-#modalClose{position:absolute;top:20px;right:28px;font-size:24px;color:var(--crystal);cursor:none;opacity:0.8;transition:opacity 0.2s;}
+#modalClose{position:absolute;top:20px;right:28px;font-size:24px;color:var(--crystal);opacity:0.8;transition:opacity 0.2s;}
 #modalClose:hover{opacity:1;}
 #modalTitle{color:var(--text-dim);font-size:12px;letter-spacing:3px;margin-top:16px;text-align:center;}
 @media(max-width:768px){.cr-section{padding-left:24px;padding-right:24px}}
@@ -44,6 +44,7 @@
 </head>
 <body>
 <canvas id="particles"></canvas>
+<div id="cursor"></div><div id="cursor-dot"></div>
 
 <nav id="navbar">
   <a href="index.html" class="nav-logo">BlackShore</a>
@@ -252,21 +253,18 @@
   <p>BLACKSHORE · <span>黑海岸</span> · 守望者的数字空间</p>
 </footer>
 
+<script src="_js/main.js"></script>
 <script>
-
-})();
-
-(function(){
-  var musicSrc='https://bilbb-a.akamaized.net/audio/music/BV1xroTY7Etk.mp3';
-  var audio=document.getElementById('bgMusic');
-  var btn=document.getElementById('musicToggle');
-  var playing=false;
-  audio.src=musicSrc;audio.volume=0.3;
-  btn.addEventListener('click',function(){
-    if(playing){audio.pause();btn.textContent='♪';btn.style.borderColor='rgba(0,212,200,0.3)';playing=false;}
-    else{audio.play().catch(function(){});btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;}
-  });
-})();
+(function(){var c=document.getElementById('cursor'),cd=document.getElementById('cursor-dot');document.addEventListener('mousemove',function(e){if(c){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';c.style.opacity='1';}if(cd){cd.style.left=e.clientX+'px';cd.style.top=e.clientY+'px';cd.style.opacity='1';}});document.addEventListener('mouseleave',function(){if(c)c.style.opacity='0';if(cd)cd.style.opacity='0';});document.addEventListener('mouseenter',function(){if(c)c.style.opacity='1';if(cd)cd.style.opacity='1';});})();
+(function(){var musicSrc='https://bilbb-a.akamaized.net/audio/music/BV1xroTY7Etk.mp3';
+var audio=document.getElementById('bgMusic');
+var btn=document.getElementById('musicToggle');
+var playing=false;
+audio.src=musicSrc;audio.volume=0.3;
+btn.addEventListener('click',function(){
+  if(playing){audio.pause();btn.textContent='♪';btn.style.borderColor='rgba(0,212,200,0.3)';playing=false;}
+  else{audio.play().catch(function(){});btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;}
+});})();
 
 document.querySelectorAll('.cr-tab').forEach(function(t){
   t.addEventListener('click',function(){
