@@ -35,15 +35,21 @@
 
 // Background music - navbar player
 (function(){
-  var musicSrc='https://bilbb-a.akamaized.net/audio/music/BV1xroTY7Etk.mp3';
+  var musicSrc='res/bgm.mp3';
   var audio=document.getElementById('bgMusic');
   var btn=document.getElementById('musicToggle');
   if(!audio||!btn)return;
   var playing=false;
-  audio.src=musicSrc;audio.volume=0.3;
+  audio.src=musicSrc;
+  audio.volume=0.3;
+  audio.load();
+  console.log('[music] src set to:', musicSrc, 'readyState:', audio.readyState);
+  audio.addEventListener('error', function(e){ console.error('[music] error:', audio.error); });
+  audio.addEventListener('canplay', function(){ console.log('[music] canplay, readyState:', audio.readyState); });
   btn.addEventListener('click',function(){
+    console.log('[music] button clicked, playing:', playing);
     if(playing){audio.pause();btn.textContent='♪';btn.style.borderColor='rgba(0,212,200,0.3)';playing=false;}
-    else{audio.play().catch(function(){});btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;}
+    else{audio.play().catch(function(e){console.error('[music] play error:',e);});btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;}
   });
   audio.addEventListener('play',function(){btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;});
   audio.addEventListener('pause',function(){btn.textContent='♪';btn.style.borderColor='rgba(0,212,200,0.3)';playing=false;});
