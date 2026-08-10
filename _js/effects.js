@@ -37,7 +37,7 @@
 (function(){
   var musicSrc='res/bgm.mp3';
   var musicTitle='赴每一程未知';
-  var STORAGE_KEY='bs_music';
+  var STORAGE_KEY='bs_player';
 
   var btn=document.getElementById('musicToggle');
   var titleEl=document.getElementById('musicTitle');
@@ -48,7 +48,6 @@
   var playing=false;
   var playerReady=false;
   var currentSrc=musicSrc;
-  var currentTitle=musicTitle;
 
   // 初始化隐藏的 iframe 播放器
   function initPlayer(){
@@ -63,22 +62,27 @@
       switch(e.data.type){
         case 'ready':
           playerReady=true;
-          // 读取当前页面的音乐信息
           syncFromPage();
           // 恢复之前保存的播放状态
-          var saved=sessionStorage.getItem(STORAGE_KEY);
-          if(saved){
-            try{
+          try{
+            var saved=sessionStorage.getItem(STORAGE_KEY);
+            if(saved){
               var state=JSON.parse(saved);
               if(state.playing){
-                playerFrame.contentWindow.postMessage({type:'setSrc',src:state.src},'*');
+                playerFrame.contentWindow.postMessage({type:'setSrc',src:state.src||currentSrc},'*');
                 setTimeout(function(){
                   playerFrame.contentWindow.postMessage({type:'play'},'*');
                   playing=true;
                   updateBtn();
-                },100);
+                },150);
+              } else {
+                playerFrame.contentWindow.postMessage({type:'setSrc',src:state.src||currentSrc},'*');
               }
-            }catch(ex){}
+            } else {
+              playerFrame.contentWindow.postMessage({type:'setSrc',src:currentSrc},'*');
+            }
+          }catch(ex){
+            playerFrame.contentWindow.postMessage({type:'setSrc',src:currentSrc},'*');
           }
           break;
         case 'playing':
@@ -97,7 +101,7 @@
   // 从页面 DOM 同步音乐信息
   function syncFromPage(){
     if(titleEl&&titleEl.textContent){
-      currentTitle=titleEl.textContent.trim();
+      musicTitle=titleEl.textContent.trim();
     }
     if(audioEl&&audioEl.src){
       var src=audioEl.getAttribute('src')||'';
@@ -122,8 +126,7 @@
     try{
       sessionStorage.setItem(STORAGE_KEY,JSON.stringify({
         playing:playing,
-        src:currentSrc,
-        title:currentTitle
+        src:currentSrc
       }));
     }catch(ex){}
   }
