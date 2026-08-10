@@ -10,36 +10,46 @@
 (function(){
   var audio = document.getElementById('player');
   var currentSrc = '';
-  var savedTime = 0;
-  var STORAGE_KEY = 'bs_player';
+  var STORAGE_KEY = '***';
 
-  // 恢复保存的进度
-  (function restoreTime(){
-    try{
-      var s = sessionStorage.getItem(STORAGE_KEY);
-      if(s){ var d = JSON.parse(s); savedTime = d.time || 0; }
-    }catch(ex){}
-  })();
+  // 保存进度到 sessionStorage（跨 iframe 共享）
+  function saveProgress(){
+    if(audio.duration > 0){
+      var time = audio.currentTime;
+      try{
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          src: currentSrc,
+          time: time,
+          playing: !audio.paused
+        }));
+      }catch(ex){}
+      // 通知父页面已保存
+      window.parent.postMessage({type: 'progressSaved', time: time}, '*');
+    }
+  }
 
-  // 处理来自主页面的消息
   window.addEventListener('message', function(e) {
     var d = e.data;
     if (!d || !d.type) return;
 
     switch (d.type) {
       case 'setSrc':
-        var isSameSrc = (d.src === currentSrc);
-        if (!isSameSrc) {
-          // 换曲子才需要重新加载，保留进度
-          savedTime = 0;
+        var newTime = (d.time > 0) ? d.time : 0;
+        if (d.src !== currentSrc) {
+          // 换曲子，重置时间
           currentSrc = d.src;
           audio.src = d.src;
           audio.load();
-          console.log('[player] src set:', d.src, 'time reset');
-        } else if (audio.readyState > 0 && savedTime > 0) {
-          // 同曲子，恢复播放位置
-          audio.currentTime = savedTime;
-          console.log('[player] time restored:', savedTime);
+          newTime = 0;
+          console.log('[player] new src:', d.src);
+        }
+        // 等 canplay 后设置时间
+        if (newTime > 0) {
+          audio.addEventListener('canplay', function handler(){
+            audio.removeEventListener('canplay', handler);
+            audio.currentTime = newTime;
+            console.log('[player] time restored to:', newTime);
+          });
         }
         break;
       case 'play':
@@ -55,38 +65,38 @@
           audio.pause();
         }
         break;
+      case 'saveProgress':
+        saveProgress();
+        break;
       case 'getState':
         window.parent.postMessage({
           type: 'state',
           playing: !audio.paused,
-          src: currentSrc,
-          musicTitle: d.musicTitle || ''
+          src: currentSrc
         }, '*');
         break;
     }
   });
 
-  // 保存播放进度
-  audio.addEventListener('timeupdate', function() {
-    if (audio.duration > 0 && !audio.paused) {
-      savedTime = audio.currentTime;
-      try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({src: currentSrc, time: savedTime})); } catch(ex){}
-    }
-  });
-
-  // 状态变化时主动通知主页面
   audio.addEventListener('play', function() {
     window.parent.postMessage({ type: 'playing', playing: true }, '*');
   });
   audio.addEventListener('pause', function() {
     window.parent.postMessage({ type: 'playing', playing: false }, '*');
+    saveProgress();
+  });
+  audio.addEventListener('timeupdate', function() {
+    // 节流：每 5 秒保存一次
+    if (!saveProgress._last || Date.now() - saveProgress._last > 5000) {
+      saveProgress._last = Date.now();
+      saveProgress();
+    }
   });
   audio.addEventListener('error', function(e) {
     console.error('[player] audio error:', audio.error);
     window.parent.postMessage({ type: 'error', error: audio.error ? audio.error.message : 'unknown' }, '*');
   });
 
-  // 初始化完成
   window.parent.postMessage({ type: 'ready' }, '*');
 })();
 </script>

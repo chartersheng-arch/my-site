@@ -37,7 +37,7 @@
 (function(){
   var musicSrc='res/bgm.mp3';
   var musicTitle='赴每一程未知';
-  var STORAGE_KEY='bs_player';
+  var STORAGE_KEY='***';
 
   var btn=document.getElementById('musicToggle');
   var titleEl=document.getElementById('musicTitle');
@@ -49,7 +49,23 @@
   var playerReady=false;
   var currentSrc=musicSrc;
 
-  // 初始化隐藏的 iframe 播放器
+  // 从 sessionStorage 读取播放进度（由 player.html 回传）
+  function getSavedTime(){
+    try{
+      var s=sessionStorage.getItem(STORAGE_KEY);
+      if(s){var d=JSON.parse(s);return d.time||0;}
+    }catch(ex){}
+    return 0;
+  }
+
+  function getSavedPlaying(){
+    try{
+      var s=sessionStorage.getItem(STORAGE_KEY);
+      if(s){var d=JSON.parse(s);return d.playing||false;}
+    }catch(ex){}
+    return false;
+  }
+
   function initPlayer(){
     playerFrame=document.createElement('iframe');
     playerFrame.id='bgPlayerFrame';
@@ -63,32 +79,37 @@
         case 'ready':
           playerReady=true;
           syncFromPage();
-          // 恢复之前保存的播放状态
-          try{
-            var saved=sessionStorage.getItem(STORAGE_KEY);
-            if(saved){
-              var state=JSON.parse(saved);
-              if(state.playing){
-                playerFrame.contentWindow.postMessage({type:'setSrc',src:state.src||currentSrc},'*');
-                setTimeout(function(){
-                  playerFrame.contentWindow.postMessage({type:'play'},'*');
-                  playing=true;
-                  updateBtn();
-                },150);
-              } else {
-                playerFrame.contentWindow.postMessage({type:'setSrc',src:state.src||currentSrc},'*');
-              }
-            } else {
-              playerFrame.contentWindow.postMessage({type:'setSrc',src:currentSrc},'*');
-            }
-          }catch(ex){
-            playerFrame.contentWindow.postMessage({type:'setSrc',src:currentSrc},'*');
+          var savedPlaying=getSavedPlaying();
+          var savedTime=getSavedTime();
+          // 通知播放器设置 src 并恢复进度
+          playerFrame.contentWindow.postMessage({
+            type:'setSrc',
+            src:currentSrc,
+            time:savedTime
+          },'*');
+          if(savedPlaying){
+            setTimeout(function(){
+              playerFrame.contentWindow.postMessage({type:'play'},'*');
+              playing=true;
+              updateBtn();
+            },200);
           }
           break;
         case 'playing':
           playing=e.data.playing;
           updateBtn();
-          saveState();
+          // 通知播放器保存当前进度
+          playerFrame.contentWindow.postMessage({type:'saveProgress'},'*');
+          break;
+        case 'progressSaved':
+          // 播放器已保存进度到 sessionStorage
+          try{
+            sessionStorage.setItem(STORAGE_KEY,JSON.stringify({
+              playing:playing,
+              src:currentSrc,
+              time:e.data.time||0
+            }));
+          }catch(ex){}
           break;
         case 'state':
           playing=e.data.playing;
@@ -98,7 +119,6 @@
     });
   }
 
-  // 从页面 DOM 同步音乐信息
   function syncFromPage(){
     if(titleEl&&titleEl.textContent){
       musicTitle=titleEl.textContent.trim();
@@ -120,15 +140,6 @@
       btn.textContent='♪';
       btn.style.borderColor='rgba(0,212,200,0.3)';
     }
-  }
-
-  function saveState(){
-    try{
-      sessionStorage.setItem(STORAGE_KEY,JSON.stringify({
-        playing:playing,
-        src:currentSrc
-      }));
-    }catch(ex){}
   }
 
   initPlayer();
