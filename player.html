@@ -5,52 +5,105 @@
 <title>BlackShore Player</title>
 </head>
 <body>
-<audio id="player" loop preload="none"></audio>
+<audio id="player" loop preload="auto"></audio>
 <script>
 (function(){
   var audio = document.getElementById('player');
   var currentSrc = '';
-  var STORAGE_KEY = '***';
+  var STORAGE_KEY = 'bsplayer';
+  var pendingTime = 0;
 
-  // 保存进度到 sessionStorage（跨 iframe 共享）
-  function saveProgress(){
-    if(audio.duration > 0){
-      var time = audio.currentTime;
-      try{
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-          src: currentSrc,
-          time: time,
-          playing: !audio.paused
-        }));
-      }catch(ex){}
-      // 通知父页面已保存
-      window.parent.postMessage({type: 'progressSaved', time: time}, '*');
+  function postToParent(type, data) {
+    try { window.parent.postMessage(Object.assign({type: type}, data || {}), '*'); } catch(ex) {}
+  }
+
+  // 页面加载时立即从 localStorage 读取保存的进度
+  function restoreFromStorage() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        pendingTime = s.time || 0;
+        if (s.src) currentSrc = s.src;
+        console.log('[player] restored from localStorage: time=' + pendingTime + ', src=' + currentSrc);
+      }
+    } catch(ex) { console.log('[player] storage restore error:', ex); }
+  }
+
+  // 保存进度到 localStorage
+  function saveToStorage(time, playing) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        src: currentSrc,
+        time: time || 0,
+        playing: playing
+      }));
+      console.log('[player] saved to localStorage: time=' + time + ', playing=' + playing);
+    } catch(ex) {}
+  }
+
+  // 设置音频 src，加载后恢复进度
+  function setAudioSrc(src, time) {
+    var isSame = (src === currentSrc);
+    currentSrc = src;
+    pendingTime = time || 0;
+
+    if (!isSame) {
+      // 换曲子，必须重新 load
+      audio.src = src;
+      audio.load();
+      console.log('[player] load new src:', src);
+    } else if (audio.readyState > 0 && pendingTime > 0) {
+      // 同曲子且已加载，直接恢复时间
+      audio.currentTime = pendingTime;
+      console.log('[player] restored time directly:', pendingTime);
+      pendingTime = 0;
+    } else {
+      // 同曲子但未加载，先 load 再在 canplay 恢复
+      audio.src = src;
+      audio.load();
     }
   }
 
+  audio.addEventListener('canplay', function onCanPlay() {
+    audio.removeEventListener('canplay', onCanPlay);
+    if (pendingTime > 0) {
+      audio.currentTime = pendingTime;
+      console.log('[player] time restored in canplay:', pendingTime);
+      pendingTime = 0;
+    }
+  });
+
+  audio.addEventListener('play', function() {
+    postToParent('playing', {playing: true});
+  });
+
+  audio.addEventListener('pause', function() {
+    postToParent('playing', {playing: false});
+    saveToStorage(audio.currentTime, false);
+  });
+
+  // 每 5 秒定时保存
+  setInterval(function() {
+    if (audio.duration > 0 && !audio.paused) {
+      saveToStorage(audio.currentTime, true);
+    }
+  }, 5000);
+
+  audio.addEventListener('error', function(e) {
+    console.error('[player] audio error:', audio.error ? audio.error.message : 'unknown');
+    postToParent('error', {error: audio.error ? audio.error.message : 'unknown'});
+  });
+
+  // 处理来自主页面的消息
   window.addEventListener('message', function(e) {
     var d = e.data;
     if (!d || !d.type) return;
+    console.log('[player] received:', d.type, d);
 
     switch (d.type) {
       case 'setSrc':
-        var newTime = (d.time > 0) ? d.time : 0;
-        if (d.src !== currentSrc) {
-          // 换曲子，重置时间
-          currentSrc = d.src;
-          audio.src = d.src;
-          audio.load();
-          newTime = 0;
-          console.log('[player] new src:', d.src);
-        }
-        // 等 canplay 后设置时间
-        if (newTime > 0) {
-          audio.addEventListener('canplay', function handler(){
-            audio.removeEventListener('canplay', handler);
-            audio.currentTime = newTime;
-            console.log('[player] time restored to:', newTime);
-          });
-        }
+        setAudioSrc(d.src, d.time || 0);
         break;
       case 'play':
         audio.play().catch(function(err){ console.error('[player] play err:', err); });
@@ -65,39 +118,21 @@
           audio.pause();
         }
         break;
-      case 'saveProgress':
-        saveProgress();
-        break;
       case 'getState':
-        window.parent.postMessage({
-          type: 'state',
-          playing: !audio.paused,
-          src: currentSrc
-        }, '*');
+        postToParent('state', { playing: !audio.paused, src: currentSrc });
         break;
     }
   });
 
-  audio.addEventListener('play', function() {
-    window.parent.postMessage({ type: 'playing', playing: true }, '*');
-  });
-  audio.addEventListener('pause', function() {
-    window.parent.postMessage({ type: 'playing', playing: false }, '*');
-    saveProgress();
-  });
-  audio.addEventListener('timeupdate', function() {
-    // 节流：每 5 秒保存一次
-    if (!saveProgress._last || Date.now() - saveProgress._last > 5000) {
-      saveProgress._last = Date.now();
-      saveProgress();
-    }
-  });
-  audio.addEventListener('error', function(e) {
-    console.error('[player] audio error:', audio.error);
-    window.parent.postMessage({ type: 'error', error: audio.error ? audio.error.message : 'unknown' }, '*');
-  });
+  // 初始化：立即读取 localStorage
+  restoreFromStorage();
+  if (currentSrc) {
+    audio.src = currentSrc;
+    audio.load();
+  }
 
-  window.parent.postMessage({ type: 'ready' }, '*');
+  postToParent('ready', {});
+  console.log('[player] init done');
 })();
 </script>
 </body>

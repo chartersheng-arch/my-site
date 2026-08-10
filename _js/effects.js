@@ -33,11 +33,11 @@
   })();
 })();
 
-// Background music - navbar player (iframe-based, persistent across pages)
+// Background music - iframe-based player with persistent progress via localStorage
 (function(){
   var musicSrc='res/bgm.mp3';
   var musicTitle='赴每一程未知';
-  var STORAGE_KEY='***';
+  var STORAGE_KEY='bsplayer';
 
   var btn=document.getElementById('musicToggle');
   var titleEl=document.getElementById('musicTitle');
@@ -49,21 +49,31 @@
   var playerReady=false;
   var currentSrc=musicSrc;
 
-  // 从 sessionStorage 读取播放进度（由 player.html 回传）
-  function getSavedTime(){
-    try{
-      var s=sessionStorage.getItem(STORAGE_KEY);
-      if(s){var d=JSON.parse(s);return d.time||0;}
-    }catch(ex){}
-    return 0;
+  function syncFromPage(){
+    if(titleEl&&titleEl.textContent) musicTitle=titleEl.textContent.trim();
+    if(audioEl&&audioEl.src){
+      var src=audioEl.getAttribute('src')||'';
+      if(src&&src!=='') currentSrc=src;
+    }
   }
 
-  function getSavedPlaying(){
+  function updateBtn(){
+    if(!btn)return;
+    if(playing){
+      btn.textContent='❚❚';
+      btn.style.borderColor='var(--crystal)';
+    }else{
+      btn.textContent='♪';
+      btn.style.borderColor='rgba(0,212,200,0.3)';
+    }
+  }
+
+  function getSavedState(){
     try{
-      var s=sessionStorage.getItem(STORAGE_KEY);
-      if(s){var d=JSON.parse(s);return d.playing||false;}
+      var s=localStorage.getItem(STORAGE_KEY);
+      if(s)return JSON.parse(s);
     }catch(ex){}
-    return false;
+    return null;
   }
 
   function initPlayer(){
@@ -79,37 +89,26 @@
         case 'ready':
           playerReady=true;
           syncFromPage();
-          var savedPlaying=getSavedPlaying();
-          var savedTime=getSavedTime();
-          // 通知播放器设置 src 并恢复进度
+          var saved=getSavedState();
+          var savedTime=saved&&saved.time?saved.time:0;
+          var wasPlaying=saved&&saved.playing;
+          console.log('[effects] ready, restoring time:',savedTime,'playing:',wasPlaying);
           playerFrame.contentWindow.postMessage({
             type:'setSrc',
             src:currentSrc,
             time:savedTime
           },'*');
-          if(savedPlaying){
+          if(wasPlaying){
             setTimeout(function(){
               playerFrame.contentWindow.postMessage({type:'play'},'*');
               playing=true;
               updateBtn();
-            },200);
+            },300);
           }
           break;
         case 'playing':
           playing=e.data.playing;
           updateBtn();
-          // 通知播放器保存当前进度
-          playerFrame.contentWindow.postMessage({type:'saveProgress'},'*');
-          break;
-        case 'progressSaved':
-          // 播放器已保存进度到 sessionStorage
-          try{
-            sessionStorage.setItem(STORAGE_KEY,JSON.stringify({
-              playing:playing,
-              src:currentSrc,
-              time:e.data.time||0
-            }));
-          }catch(ex){}
           break;
         case 'state':
           playing=e.data.playing;
@@ -117,29 +116,6 @@
           break;
       }
     });
-  }
-
-  function syncFromPage(){
-    if(titleEl&&titleEl.textContent){
-      musicTitle=titleEl.textContent.trim();
-    }
-    if(audioEl&&audioEl.src){
-      var src=audioEl.getAttribute('src')||'';
-      if(src&&src!==''){
-        currentSrc=src;
-      }
-    }
-  }
-
-  function updateBtn(){
-    if(!btn)return;
-    if(playing){
-      btn.textContent='❚❚';
-      btn.style.borderColor='var(--crystal)';
-    }else{
-      btn.textContent='♪';
-      btn.style.borderColor='rgba(0,212,200,0.3)';
-    }
   }
 
   initPlayer();
