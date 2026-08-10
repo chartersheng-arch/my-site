@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BlackShore Player</title>
+</head>
+<body>
+<audio id="player" loop preload="none"></audio>
+<script>
+(function(){
+  var audio = document.getElementById('player');
+  var currentSrc = '';
+
+  // 处理来自主页面的消息
+  window.addEventListener('message', function(e) {
+    var d = e.data;
+    if (!d || !d.type) return;
+
+    switch (d.type) {
+      case 'setSrc':
+        if (d.src !== currentSrc) {
+          currentSrc = d.src;
+          audio.src = d.src;
+          audio.load();
+          console.log('[player] src set:', d.src);
+        }
+        break;
+      case 'play':
+        audio.play().catch(function(err){ console.error('[player] play err:', err); });
+        break;
+      case 'pause':
+        audio.pause();
+        break;
+      case 'toggle':
+        if (audio.paused) {
+          audio.play().catch(function(err){ console.error('[player] play err:', err); });
+        } else {
+          audio.pause();
+        }
+        break;
+      case 'getState':
+        // 发送当前状态回去
+        window.parent.postMessage({
+          type: 'state',
+          playing: !audio.paused,
+          src: currentSrc,
+          musicTitle: d.musicTitle || ''
+        }, '*');
+        break;
+    }
+  });
+
+  // 状态变化时主动通知主页面
+  audio.addEventListener('play', function() {
+    window.parent.postMessage({ type: 'playing', playing: true }, '*');
+  });
+  audio.addEventListener('pause', function() {
+    window.parent.postMessage({ type: 'playing', playing: false }, '*');
+  });
+  audio.addEventListener('error', function(e) {
+    console.error('[player] audio error:', audio.error);
+    window.parent.postMessage({ type: 'error', error: audio.error ? audio.error.message : 'unknown' }, '*');
+  });
+
+  // 初始化完成
+  window.parent.postMessage({ type: 'ready' }, '*');
+})();
+</script>
+</body>
+</html>

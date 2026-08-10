@@ -33,24 +33,105 @@
   })();
 })();
 
-// Background music - navbar player
+// Background music - navbar player (iframe-based, persistent across pages)
 (function(){
   var musicSrc='res/bgm.mp3';
-  var audio=document.getElementById('bgMusic');
+  var musicTitle='赴每一程未知';
+  var STORAGE_KEY='bs_music';
+
   var btn=document.getElementById('musicToggle');
-  if(!audio||!btn)return;
+  var titleEl=document.getElementById('musicTitle');
+  var audioEl=document.getElementById('bgMusic');
+  if(!btn)return;
+
+  var playerFrame=null;
   var playing=false;
-  audio.src=musicSrc;
-  audio.volume=0.3;
-  audio.load();
-  console.log('[music] src set to:', musicSrc, 'readyState:', audio.readyState);
-  audio.addEventListener('error', function(e){ console.error('[music] error:', audio.error); });
-  audio.addEventListener('canplay', function(){ console.log('[music] canplay, readyState:', audio.readyState); });
+  var playerReady=false;
+  var currentSrc=musicSrc;
+  var currentTitle=musicTitle;
+
+  // 初始化隐藏的 iframe 播放器
+  function initPlayer(){
+    playerFrame=document.createElement('iframe');
+    playerFrame.id='bgPlayerFrame';
+    playerFrame.style.cssText='position:fixed;width:1px;height:1px;border:none;top:-9999px;left:-9999px;pointer-events:none;visibility:hidden;';
+    playerFrame.src='player.html';
+    document.body.appendChild(playerFrame);
+
+    window.addEventListener('message',function(e){
+      if(!e.data||!e.data.type)return;
+      switch(e.data.type){
+        case 'ready':
+          playerReady=true;
+          // 读取当前页面的音乐信息
+          syncFromPage();
+          // 恢复之前保存的播放状态
+          var saved=sessionStorage.getItem(STORAGE_KEY);
+          if(saved){
+            try{
+              var state=JSON.parse(saved);
+              if(state.playing){
+                playerFrame.contentWindow.postMessage({type:'setSrc',src:state.src},'*');
+                setTimeout(function(){
+                  playerFrame.contentWindow.postMessage({type:'play'},'*');
+                  playing=true;
+                  updateBtn();
+                },100);
+              }
+            }catch(ex){}
+          }
+          break;
+        case 'playing':
+          playing=e.data.playing;
+          updateBtn();
+          saveState();
+          break;
+        case 'state':
+          playing=e.data.playing;
+          updateBtn();
+          break;
+      }
+    });
+  }
+
+  // 从页面 DOM 同步音乐信息
+  function syncFromPage(){
+    if(titleEl&&titleEl.textContent){
+      currentTitle=titleEl.textContent.trim();
+    }
+    if(audioEl&&audioEl.src){
+      var src=audioEl.getAttribute('src')||'';
+      if(src&&src!==''){
+        currentSrc=src;
+      }
+    }
+  }
+
+  function updateBtn(){
+    if(!btn)return;
+    if(playing){
+      btn.textContent='❚❚';
+      btn.style.borderColor='var(--crystal)';
+    }else{
+      btn.textContent='♪';
+      btn.style.borderColor='rgba(0,212,200,0.3)';
+    }
+  }
+
+  function saveState(){
+    try{
+      sessionStorage.setItem(STORAGE_KEY,JSON.stringify({
+        playing:playing,
+        src:currentSrc,
+        title:currentTitle
+      }));
+    }catch(ex){}
+  }
+
+  initPlayer();
+
   btn.addEventListener('click',function(){
-    console.log('[music] button clicked, playing:', playing);
-    if(playing){audio.pause();btn.textContent='♪';btn.style.borderColor='rgba(0,212,200,0.3)';playing=false;}
-    else{audio.play().catch(function(e){console.error('[music] play error:',e);});btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;}
+    if(!playerReady)return;
+    playerFrame.contentWindow.postMessage({type:'toggle'},'*');
   });
-  audio.addEventListener('play',function(){btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;});
-  audio.addEventListener('pause',function(){btn.textContent='♪';btn.style.borderColor='rgba(0,212,200,0.3)';playing=false;});
 })();

@@ -61,10 +61,6 @@
     <a href="chat.html">漂泊的终点</a>
     <a href="more.html">时空裂隙</a>
   </ul>
-  <div id="nav-music">
-    <button id="musicToggle" title="播放背景音乐">♪</button>
-    <span id="musicTitle">繁星、新生，与你</span>
-  </div>
 </nav>
 
 <audio id="bgMusic" loop><source src="" type="audio/mpeg"></audio>
@@ -254,18 +250,8 @@
 </footer>
 
 <script src="_js/main.js"></script>
+<script src="_js/effects.js"></script>
 <script>
-(function(){var c=document.getElementById('cursor'),cd=document.getElementById('cursor-dot');document.addEventListener('mousemove',function(e){if(c){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';c.style.opacity='1';}if(cd){cd.style.left=e.clientX+'px';cd.style.top=e.clientY+'px';cd.style.opacity='1';}});document.addEventListener('mouseleave',function(){if(c)c.style.opacity='0';if(cd)cd.style.opacity='0';});document.addEventListener('mouseenter',function(){if(c)c.style.opacity='1';if(cd)cd.style.opacity='1';});})();
-(function(){var musicSrc='res/bgm.mp3';
-var audio=document.getElementById('bgMusic');
-var btn=document.getElementById('musicToggle');
-var playing=false;
-audio.src=musicSrc;audio.volume=0.3;
-btn.addEventListener('click',function(){
-  if(playing){audio.pause();btn.textContent='♪';btn.style.borderColor='rgba(0,212,200,0.3)';playing=false;}
-  else{audio.play().catch(function(){});btn.textContent='❚❚';btn.style.borderColor='var(--crystal)';playing=true;}
-});})();
-
 document.querySelectorAll('.cr-tab').forEach(function(t){
   t.addEventListener('click',function(){
     document.querySelectorAll('.cr-tab').forEach(function(x){x.classList.remove('active');});
